@@ -1649,7 +1649,9 @@ var molmil;
     molmil.handle_contextMenu_touchEnd = handle_contextMenu_touchEnd;
     // ** quick functions **
     // ** shows/hides (part of) a structure **
-    function toggleEntry(obj, dm, rebuildGeometry, soup) { molmil.displayEntry(obj, dm ? molmil.displayMode_Visible : molmil.displayMode_None, rebuildGeometry, soup); }
+    function toggleEntry(obj, dm, rebuildGeometry, soup) {
+        molmil.displayEntry(obj, dm ? molmil.displayMode_Visible : molmil.displayMode_None, rebuildGeometry, soup);
+    }
     molmil.toggleEntry = toggleEntry;
     // ** change display mode of a system/chain/molecule/atom **
     function displayEntry(obj, dm, rebuildGeometry, soup, settings) {
@@ -4197,30 +4199,6 @@ var molmil;
     }
     molmil.pointerLock_update = pointerLock_update;
     ;
-    function startWebVR(that) {
-        //canvas.requestPointerLock(that.canvas);
-        molmil.vrDisplays[0].requestPresent([{ source: that.canvas }]).then(function () {
-            molmil.vrDisplay = molmil.vrDisplays[0];
-            that.renderer.reinitRenderer();
-            //molmil.vrDisplay.resetPose(); // deprecated
-            var leftEye = molmil.vrDisplay.getEyeParameters('left');
-            var rightEye = molmil.vrDisplay.getEyeParameters('right');
-            that.renderer.width = that.width = that.canvas.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
-            that.renderer.height = that.height = that.canvas.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
-            molmil.configBox.stereoMode = 3;
-            that.renderer.camera.z = that.calcZ();
-            //molmil.pointerLoc_setup(that.canvas);
-            window.addEventListener('vrdisplaypresentchange', function () {
-                if (molmil.vrDisplay.isPresenting)
-                    return;
-                molmil.configBox.stereoMode = 0;
-                that.canvas.update = true; // draw scene
-            });
-            that.canvas.update = true; // draw scene
-        });
-    }
-    molmil.startWebVR = startWebVR;
-    ;
     // END
     function autoSetup(options, canvas) {
         options = options || {};
@@ -4379,27 +4357,6 @@ var molmil;
         }
     }
     molmil.promode_elastic = promode_elastic;
-    function normalFromMat3(a, out) {
-        var a00 = a[0], a01 = a[1], a02 = a[2], a03 = 0, a10 = a[3], a11 = a[4], a12 = a[5], a13 = 0, a20 = a[6], a21 = a[7], a22 = a[8], a23 = 0, a30 = 0, a31 = 0, a32 = 0, a33 = 1, b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12, b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32, 
-        // Calculate the determinant
-        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-        if (!det) {
-            return null;
-        }
-        det = 1.0 / det;
-        out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-        out[1] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-        out[2] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-        out[3] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-        out[4] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-        out[5] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-        out[6] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-        out[7] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-        out[8] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-        return out;
-    }
-    molmil.normalFromMat3 = normalFromMat3;
-    ;
     function transformObject(obj, matrix) {
         var soup = soup || molmil.cli_soup || molmil.fetchCanvas().molmilViewer;
         if (obj instanceof molmil.polygonObject) {
@@ -4804,61 +4761,6 @@ var molmil;
         */
     }
     molmil.getState = getState;
-    if (typeof (requestAnimationFrame) != "undefined")
-        molmil.animate_molmilViewers();
-    if (!window.molmil_dep) {
-        var dep = document.createElement("script");
-        dep.src = molmil.settings.src + "molmil_dep.js";
-        var head = document.getElementsByTagName("head")[0];
-        head.appendChild(dep);
-    }
-    function initVR(soup, callback) {
-        var initFakeVR = function () {
-            var dep = document.createElement("script");
-            dep.src = molmil.settings.src + "lib/webvr-polyfill.min.js";
-            dep.onload = function () {
-                var config = {
-                    // Scales the recommended buffer size reported by WebVR, which can improve
-                    // performance.
-                    BUFFER_SCALE: 1.0, // Default: 0.5.
-                };
-                var polyfill = new WebVRPolyfill(config);
-                navigator.getVRDisplays().then(function (displays) {
-                    if (displays.length) {
-                        molmil.vrDisplays = displays;
-                        molmil.VRstatus = true;
-                        molmil.initVR(soup, callback);
-                    }
-                    else {
-                        molmil.VRstatus = false;
-                        callback();
-                    }
-                });
-            };
-            var head = document.getElementsByTagName("head")[0];
-            head.appendChild(dep);
-        };
-        if (!molmil.VRstatus) {
-            if (navigator.getVRDisplays) {
-                navigator.getVRDisplays().then(function (displays) { if (displays.length) {
-                    molmil.vrDisplays = displays;
-                    molmil.VRstatus = true;
-                    molmil.initVR(soup, callback);
-                }
-                else
-                    initFakeVR(); }).catch(function () { initFakeVR(); });
-            }
-            else
-                initFakeVR();
-        }
-        else {
-            if (soup)
-                molmil.startWebVR(soup);
-            if (callback)
-                callback();
-        }
-    }
-    molmil.initVR = initVR;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
@@ -4970,7 +4872,7 @@ var molmil;
     }
     molmil.buCheck = buCheck;
     function findResidueRings(molObj) {
-        var bondInfo = {}, atomRef = {}, i;
+        var bondInfo = {}, atomRef = {};
         for (i = 0; i < molObj.atoms.length; i++) {
             bondInfo[molObj.atoms[i].AID] = [];
             atomRef[molObj.atoms[i].AID] = molObj.atoms[i];
@@ -5004,9 +4906,11 @@ var molmil;
     }
     molmil.findResidueRings = findResidueRings;
     ;
+    /**
+     * geometry object, used to generate protein geometry; atoms, bonds, loops, helices, sheets
+    */
     var _geometry = /** @class */ (function () {
         function _geometry() {
-            // ** geometry object, used to generate protein geometry; atoms, bonds, loops, helices, sheets **
             this.templates = { sphere: { base: {} }, cylinder: [], dome: {} };
             this.detail_lvs = 5;
             this.dome = [0, 0, -1];
@@ -5095,7 +4999,7 @@ var molmil;
         _geometry.prototype.generate = function (structures, render, detail_or) {
             this.reset();
             var chains = [], cchains = [];
-            for (var s = 0, c; s < structures.length; s++) {
+            for (var s = 0; s < structures.length; s++) {
                 if (!(structures[s] instanceof molmil.entryObject) || structures[s].display == false)
                     continue;
                 for (var c = 0; c < structures[s].chains.length; c++) {
@@ -10616,6 +10520,14 @@ window.addEventListener("message", function (e) {
         console.error(e);
     }
 }, false);
+if (typeof (requestAnimationFrame) != "undefined")
+    molmil.animate_molmilViewers();
+if (!window.molmil_dep) {
+    var dep = document.createElement("script");
+    dep.src = molmil.settings.src + "molmil_dep.js";
+    var head = document.getElementsByTagName("head")[0];
+    head.appendChild(dep);
+}
 molmil.initSettings();
 var molmil;
 (function (molmil) {
@@ -10664,6 +10576,27 @@ var molmil;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
+    function normalFromMat3(a, out) {
+        var a00 = a[0], a01 = a[1], a02 = a[2], a03 = 0, a10 = a[3], a11 = a[4], a12 = a[5], a13 = 0, a20 = a[6], a21 = a[7], a22 = a[8], a23 = 0, a30 = 0, a31 = 0, a32 = 0, a33 = 1, b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12, b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32, 
+        // Calculate the determinant
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+        if (!det) {
+            return null;
+        }
+        det = 1.0 / det;
+        out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+        out[1] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+        out[2] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+        out[3] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+        out[4] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+        out[5] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+        out[6] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+        out[7] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+        out[8] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+        return out;
+    }
+    molmil.normalFromMat3 = normalFromMat3;
+    ;
     // ** distance/angle/torsion calculation **
     function getAtomXYZ(atom, soup) {
         var modelId = soup.renderer.modelId;
@@ -10790,6 +10723,82 @@ var molmil;
         });
     }
     molmil.arrayMax = arrayMax;
+})(molmil || (molmil = {}));
+var molmil;
+(function (molmil) {
+    function startWebVR(that) {
+        //canvas.requestPointerLock(that.canvas);
+        molmil.vrDisplays[0].requestPresent([{ source: that.canvas }]).then(function () {
+            molmil.vrDisplay = molmil.vrDisplays[0];
+            that.renderer.reinitRenderer();
+            //molmil.vrDisplay.resetPose(); // deprecated
+            var leftEye = molmil.vrDisplay.getEyeParameters('left');
+            var rightEye = molmil.vrDisplay.getEyeParameters('right');
+            that.renderer.width = that.width = that.canvas.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
+            that.renderer.height = that.height = that.canvas.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
+            molmil.configBox.stereoMode = 3;
+            that.renderer.camera.z = that.calcZ();
+            //molmil.pointerLoc_setup(that.canvas);
+            window.addEventListener('vrdisplaypresentchange', function () {
+                if (molmil.vrDisplay.isPresenting)
+                    return;
+                molmil.configBox.stereoMode = 0;
+                that.canvas.update = true; // draw scene
+            });
+            that.canvas.update = true; // draw scene
+        });
+    }
+    molmil.startWebVR = startWebVR;
+    ;
+    function initVR(soup, callback) {
+        var initFakeVR = function () {
+            var dep = document.createElement("script");
+            dep.src = molmil.settings.src + "lib/webvr-polyfill.min.js";
+            dep.onload = function () {
+                var config = {
+                    // Scales the recommended buffer size reported by WebVR, which can improve
+                    // performance.
+                    BUFFER_SCALE: 1.0, // Default: 0.5.
+                };
+                var polyfill = new WebVRPolyfill(config);
+                navigator.getVRDisplays().then(function (displays) {
+                    if (displays.length) {
+                        molmil.vrDisplays = displays;
+                        molmil.VRstatus = true;
+                        molmil.initVR(soup, callback);
+                    }
+                    else {
+                        molmil.VRstatus = false;
+                        callback();
+                    }
+                });
+            };
+            var head = document.getElementsByTagName("head")[0];
+            head.appendChild(dep);
+        };
+        if (!molmil.VRstatus) {
+            if (navigator.getVRDisplays) {
+                navigator.getVRDisplays().then(function (displays) {
+                    if (displays.length) {
+                        molmil.vrDisplays = displays;
+                        molmil.VRstatus = true;
+                        molmil.initVR(soup, callback);
+                    }
+                    else
+                        initFakeVR();
+                }).catch(function () { initFakeVR(); });
+            }
+            else
+                initFakeVR();
+        }
+        else {
+            if (soup)
+                molmil.startWebVR(soup);
+            if (callback)
+                callback();
+        }
+    }
+    molmil.initVR = initVR;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
