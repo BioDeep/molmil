@@ -57,16 +57,16 @@ constructor (soup) {
   (this.canvas ? this.canvas.parentNode : document.body).appendChild(cont);
 };
 
-molmil.UI.prototype.deleteEntry=function(entry) {
+ deleteEntry (entry) {
 };
 
-molmil.UI.prototype.displayEntry=function(entry, dm) {
+ displayEntry (entry, dm) {
   if (entry.ref) molmil.displayEntry(entry.ref, dm, true, this.soup);
   document.body.onmousedown();
 };
 
 
-molmil.UI.prototype.editLabel=function(settings) {
+ editLabel (settings) {
   var obj=null, text;
   
   var onOK = null;
@@ -112,7 +112,7 @@ molmil.UI.prototype.editLabel=function(settings) {
   ], onOK);
 };
 
-molmil.UI.prototype.showContextMenuAtom=function(x, y, pageX) {
+ showContextMenuAtom (x, y, pageX) {
   if (document.body.onmousedown) document.body.onmousedown();
   
   var atoms = this.soup.atomSelection;
@@ -133,7 +133,7 @@ molmil.UI.prototype.showContextMenuAtom=function(x, y, pageX) {
 
 
 
-molmil.UI.prototype.showRM=function(icon, reset) {
+ showRM (icon, reset) {
   var menu = icon.parentNode.menu;
   molmil_dep.Clear(menu);menu.innerHTML = "";
   if (menu.style.display == "none" || reset) {
@@ -232,7 +232,7 @@ molmil.UI.prototype.showRM=function(icon, reset) {
   }
 };
 
-molmil.UI.prototype.showChains=function(target, payload) {
+ showChains (target, payload) {
   var chain, item;
   target.pushNode("span", "Chains:").className = "optCat_k";
   target.pushNode("hr");
@@ -277,7 +277,7 @@ molmil.UI.prototype.showChains=function(target, payload) {
 };
 
 
-molmil.UI.prototype.showResidues=function(target, payload) {
+ showResidues (target, payload) {
   target.pushNode("span", "Residues/Ligands:").className = "optCat_k";;
   target.pushNode("hr");
   var mol, item;
@@ -354,7 +354,7 @@ molmil.UI.prototype.showResidues=function(target, payload) {
 
 //molmil.UI.prototype.
 
-molmil.UI.prototype.showLM=function(icon) {
+ showLM (icon) {
   var UI = this;
   if (molmil.VRstatus === void 0) return molmil.initVR(null, function() {UI.showLM(icon);});
   
@@ -546,7 +546,7 @@ molmil.UI.prototype.showLM=function(icon) {
   if (this.onLMshow) this.onLMshow();
 };
 
-molmil.UI.prototype.view=function(sub) {
+ view (sub) {
   molmil_dep.Clear(sub);
   var e, UI = this;
   sub.style.display = "";
@@ -567,21 +567,21 @@ molmil.UI.prototype.view=function(sub) {
   }
 }
 
-molmil.UI.prototype.toggleWaters=function(show) {
+ toggleWaters (show) {
   this.soup.waterToggle(show);
   this.soup.renderer.initBuffers();
   this.soup.canvas.update = true;
   document.body.onmousedown();
 };
 
-molmil.UI.prototype.toggleHydrogens=function(show) {
+ toggleHydrogens (show) {
   this.soup.hydrogenToggle(show);
   this.soup.renderer.initBuffers();
   this.soup.canvas.update = true;
   document.body.onmousedown();
 };
 
-molmil.UI.prototype.animationPopUp=function() {
+ animationPopUp () {
 
   var popup = molmil_dep.dcE("div");
   popup.setClass("molmil_menu_popup");
@@ -682,7 +682,7 @@ molmil.UI.prototype.animationPopUp=function() {
     // beginning, previous, pause, play, next, end buttons
 }
 
-molmil.UI.prototype.resetRM=function() {
+ resetRM () {
   try {
     molmil_dep.Clear(this.RM.parentNode.menu);
     if (this.RM.parentNode.menu.style.display != "none") this.showRM(this.RM, true);
@@ -690,7 +690,7 @@ molmil.UI.prototype.resetRM=function() {
   catch (e) {}
 };
 
-molmil.UI.prototype.toggleCLI=function() {
+ toggleCLI() {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   
   if (! this.canvas.commandLine) new molmil.commandLine(this.canvas);
@@ -699,7 +699,7 @@ molmil.UI.prototype.toggleCLI=function() {
   this.resetRM();
 };
 
-molmil.UI.prototype.clear=function() {
+ clear () {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   
   var popup = molmil_dep.dcE("div");
@@ -720,7 +720,7 @@ molmil.UI.prototype.clear=function() {
   this.LM.parentNode.pushNode(popup);
 };
 
-molmil.UI.prototype.showDialog=function(func) {
+ showDialog (func) {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   
   var popup = molmil_dep.dcE("div");
@@ -733,7 +733,7 @@ molmil.UI.prototype.showDialog=function(func) {
   return popup;
 }
 
-molmil.UI.prototype.xyz_input_popup=function(fp, fn, cb) {
+ xyz_input_popup (fp, fn, cb) {
   this.showDialog(function(dialog) {
     var table = dialog.pushNode("table"), tr, td, load, cancel;
     var skipBonds;
@@ -767,7 +767,7 @@ molmil.UI.prototype.xyz_input_popup=function(fp, fn, cb) {
 }
 
 
-molmil.UI.prototype.ccp4_input_popup=function(fp, fn, cb) {
+ ccp4_input_popup (fp, fn, cb) {
   this.showDialog(function(dialog) {
     var table = dialog.pushNode("table"), tr, td, load, cancel;
     var sigma, solid, skipnorm;
@@ -814,7 +814,7 @@ molmil.UI.prototype.ccp4_input_popup=function(fp, fn, cb) {
   });
 }
 
-molmil.UI.prototype.open=function(name, format, ondone, oncancel, binary) {
+ open (name, format, ondone, oncancel, binary) {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   if (this.onLMshow) this.onLMshow();
   
@@ -868,7 +868,7 @@ molmil.UI.prototype.open=function(name, format, ondone, oncancel, binary) {
   
 };
 
-molmil.UI.prototype.openID=function(dbid) {
+ openID (dbid) {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   if (this.onLMshow) this.onLMshow();
   
@@ -918,7 +918,7 @@ molmil.UI.prototype.openID=function(dbid) {
   popup.inp.focus();
 }
 
-molmil.UI.prototype.savePNG=function() {
+ savePNG () {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   if (this.onLMshow) this.onLMshow();
   
@@ -978,7 +978,7 @@ molmil.UI.prototype.savePNG=function() {
 }
 
 
-molmil.UI.prototype.videoRenderer=function(justStart) {
+ videoRenderer (justStart) {
   if (this.LM && this.LM.parentNode.childNodes.length > 1) this.LM.onclick();
   if (this.onLMshow) this.onLMshow();
   
