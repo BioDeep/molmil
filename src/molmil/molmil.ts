@@ -1,19 +1,7 @@
-/// <reference path="./extends.ts" />
-/// <reference path="./settings.ts" />
-/// <reference path="./SNFG.ts" />
-
-/*!
- * molmil.js
- *
- * Molmil molecular web viewer: https://github.com/gjbekker/molmil
- * 
- * By Gert-Jan Bekker
- * License: LGPLv3
- *   See https://github.com/gjbekker/molmil/blob/master/LICENCE.md
- */
+namespace molmil {
 
 
-molmil.initSettings = function () {
+export function initSettings  () {
   cifDicLocJSON = "https://pdbj.org/molmil2/mmcif_pdbx_v50_summary.json";
   cifDicLoc = "https://data.pdbj.org/pdbjplus/dictionaries/mmcif_pdbx.dic";
 
@@ -76,7 +64,7 @@ molmil.initSettings = function () {
   molmil.updateBGcolor();
 }
 
-molmil.updateBGcolor = function () {
+export function updateBGcolor   () {
   var fgcolor = molmil.hex2rgb(molmil.invertColor(molmil.rgb2hex(molmil.configBox.BGCOLOR[0] * 255, molmil.configBox.BGCOLOR[1] * 255, molmil.configBox.BGCOLOR[2] * 255)));
   let root = document.documentElement;
   root.style.setProperty("--BACKGROUND_COLOR", (molmil.configBox.BGCOLOR[0] * 255).toFixed() + "," + (molmil.configBox.BGCOLOR[1] * 255).toFixed() + "," + (molmil.configBox.BGCOLOR[2] * 255).toFixed());
@@ -86,37 +74,6 @@ molmil.updateBGcolor = function () {
   root.style.setProperty("--BACKGROUND_LIGHT_COLOR", ((molmil.configBox.BGCOLOR[0] * sf + fgcolor[0] * isf) * 255).toFixed() + "," + ((molmil.configBox.BGCOLOR[1] * sf + fgcolor[1] * isf) * 255).toFixed() + "," + ((molmil.configBox.BGCOLOR[2] * sf + fgcolor[2] * isf) * 255).toFixed());
 }
 
-// display modes
-molmil.displayMode_None = 0;
-molmil.displayMode_Visible = 0.5;
-molmil.displayMode_Default = 1;
-molmil.displayMode_Spacefill = 2;
-molmil.displayMode_Spacefill_SC = 2.5;
-molmil.displayMode_BallStick = 3;
-molmil.displayMode_BallStick_SC = 3.5;
-molmil.displayMode_Stick = 4;
-molmil.displayMode_Stick_SC = 4.5;
-molmil.displayMode_Wireframe = 5;
-molmil.displayMode_Wireframe_SC = 5.5;
-molmil.displayMode_CaTrace = 6;
-molmil.displayMode_Tube = 7;
-molmil.displayMode_Cartoon = 8;
-molmil.displayMode_CartoonRocket = 8.5;
-molmil.displayMode_ChainSurfaceCG = 10;
-molmil.displayMode_ChainSurfaceSimple = 11;
-
-molmil.displayMode_XNA = 400;
-
-// color modes
-molmil.colorEntry_Default = 1;
-molmil.colorEntry_Structure = 2;
-molmil.colorEntry_CPK = 3;
-molmil.colorEntry_Group = 4;
-molmil.colorEntry_Chain = 5;
-molmil.colorEntry_Custom = 6;
-molmil.colorEntry_ChainAlt = 7;
-molmil.colorEntry_ABEGO = 8;
-molmil.colorEntry_Entity = 9;
 
 // ** data objects **
 
@@ -7043,4 +7000,5 @@ molmil.arrayMax = function (arr) {
   });
 }
 
-molmil.initSettings();
+
+}

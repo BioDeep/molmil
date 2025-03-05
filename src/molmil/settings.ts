@@ -7,8 +7,6 @@ namespace molmil {
     // molmil.entryObject.programs = [];
     // dynamically update the programs (e.g. if a wireframe one isn't necessary, don't use it)
 
-
-
     export var canvasList = [];
     export var mouseDown = false;
     export var mouseDownS = {};
@@ -319,4 +317,37 @@ namespace molmil {
         "ASP": 1, "GLU": 1, "PHE": 1, "GLY": 1, "HIS": 1, "ILE": 1, "LYS": 1, "LEU": 1, "MET": 1, "ASN": 1, "PRO": 1, "GLN": 1, "ARG": 1, "SER": 1, "THR": 1, "VAL": 1, "TRP": 1, "TYR": 1, "ACE": 1, "NME": 1, "NH2": 1, "HIP": 1, "HIE": 1, "HID": 1, "CYM": 1
     };
 
+
+    
+// display modes
+export var displayMode_None = 0;
+export var displayMode_Visible = 0.5;
+export var displayMode_Default = 1;
+export var displayMode_Spacefill = 2;
+export var displayMode_Spacefill_SC = 2.5;
+export var displayMode_BallStick = 3;
+export var displayMode_BallStick_SC = 3.5;
+export var displayMode_Stick = 4;
+export var displayMode_Stick_SC = 4.5;
+export var displayMode_Wireframe = 5;
+export var displayMode_Wireframe_SC = 5.5;
+export var displayMode_CaTrace = 6;
+export var displayMode_Tube = 7;
+export var displayMode_Cartoon = 8;
+export var displayMode_CartoonRocket = 8.5;
+export var displayMode_ChainSurfaceCG = 10;
+export var displayMode_ChainSurfaceSimple = 11;
+
+export var displayMode_XNA = 400;
+
+// color modes
+molmil.colorEntry_Default = 1;
+molmil.colorEntry_Structure = 2;
+molmil.colorEntry_CPK = 3;
+molmil.colorEntry_Group = 4;
+molmil.colorEntry_Chain = 5;
+molmil.colorEntry_Custom = 6;
+molmil.colorEntry_ChainAlt = 7;
+molmil.colorEntry_ABEGO = 8;
+molmil.colorEntry_Entity = 9;
 }
