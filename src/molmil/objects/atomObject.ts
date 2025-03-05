@@ -29,7 +29,7 @@ namespace molmil {
             this.Bfactor = 0;
         }
 
-        toString  () {
+        toString() {
             var sgl = this.molecule.atoms.length > 1;
             return (sgl ? this.atomName : this.element) + " (" + this.AID + ") - " + (sgl ? (this.molecule.name || "") + " " : "") + (this.molecule.RSID || "") + (this.molecule.chain.name ? " - Chain " + this.molecule.chain.name : "");
         };

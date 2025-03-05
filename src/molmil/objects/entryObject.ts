@@ -1,6 +1,6 @@
 namespace molmil {
 
-    export function simpleEntry  () {
+    export function simpleEntry() {
         /*
         this.altLocList; // wrap
         this.atomIdList; // not --> index+1
@@ -38,9 +38,10 @@ namespace molmil {
         this.yCoordList;
         this.zCoordList;
         */
-      
-      };
+
+    };
     export class entryObject {
+        
         constructor(meta) { // this should become a structure object instead --> models should only be virtual; i.e. only the coordinates should be saved, the structure (chain->residue->atom) is determined by the initial model
             this.chains = [];
             this.meta = meta || {};
@@ -50,8 +51,8 @@ namespace molmil {
             this.BUassemblies = {};
         };
 
-        
-toString  () { return "Entry " + (this.meta.id || ""); };
+
+        toString() { return "Entry " + (this.meta.id || ""); };
 
     }
 }
