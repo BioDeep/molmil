@@ -1,6 +1,18 @@
 namespace molmil_dep {
 
     export class CallRemote {
+
+        formData;
+        request: XMLHttpRequest;
+        Method;
+        parameters: [];
+        headers: {};
+        ASYNC: boolean;
+        ctype: string;
+        responseType;
+        forceSSL: boolean;
+        URL;
+
         constructor(method, crossDomain) {
             this.formData = null; this.request = null; this.Method = method; this.parameters = [], this.headers = {};
             if (method == "POSTv2" && typeof (FormData) != "undefined") { this.formData = new FormData(); }
@@ -14,7 +26,11 @@ namespace molmil_dep {
 
         initRequest(crossDomain) {
             var stupidIE = molmil_dep.dBT.MSIE && molmil_dep.dBT.majorVersion < 10;
-            if (crossDomain && molmil_dep.dBT.MSIE && molmil_dep.dBT.majorVersion < 10 && typeof (XDomainRequest) != "undefined") { stupidIE = false; this.request = new XDomainRequest(); this.Method = "POST"; }
+            if (crossDomain && molmil_dep.dBT.MSIE && molmil_dep.dBT.majorVersion < 10 && typeof (XDomainRequest) != "undefined") {
+                stupidIE = false;
+                this.request = new XDomainRequest();
+                this.Method = "POST";
+            }
             else this.request = new XMLHttpRequest();
             this.request.XHRO = this.request;
             var ref = this.request.CRO = this;// firefox 2.0
@@ -75,7 +91,10 @@ namespace molmil_dep {
                 if (this.responseType) { this.request.responseType = this.responseType; }
                 this.request.send((this.parameters.length ? this.parameters : null));
             }
-            else if (this.Method == "POSTv2" && this.formData) { this.request.open("POST", URL, this.ASYNC); if (this.responseType) { this.request.responseType = this.responseType; } this.request.send(this.formData); }
+            else if (this.Method == "POSTv2" && this.formData) {
+                this.request.open("POST", URL, this.ASYNC);
+                if (this.responseType) { this.request.responseType = this.responseType; } this.request.send(this.formData);
+            }
             else if (this.Method == "HEAD") { this.request.open("HEAD", URL, this.ASYNC); this.request.send(null); }
             //  if (this.request.ERROR) {throw "ERROR";}
             this.request.silent = silent;
