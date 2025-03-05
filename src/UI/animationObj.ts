@@ -2,6 +2,19 @@ namespace molmil {
 
     export class animationObj {
 
+        soup;
+        renderer;
+        frameNo;
+        motionMode;
+        init;
+        delay;
+        frameAction;
+        detail_or;
+        infoBox;
+        number_of_frames;
+        TID;
+        playing;
+
         constructor(soup) {
             this.soup = soup;
             this.renderer = soup.renderer;
@@ -14,7 +27,7 @@ namespace molmil {
             this.infoBox = null;
         }
 
-        initialise(infoBox) { // redo
+        initialise(infoBox = null) { // redo
             this.renderer.animationMode = true;
             this.number_of_frames = this.soup.structures.length ? this.soup.structures[0].number_of_frames : 0;
             this.frameNo = this.renderer.modelId;

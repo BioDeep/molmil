@@ -47,8 +47,20 @@ declare namespace molmil {
 }
 declare namespace molmil {
     class animationObj {
+        soup: any;
+        renderer: any;
+        frameNo: any;
+        motionMode: any;
+        init: any;
+        delay: any;
+        frameAction: any;
+        detail_or: any;
+        infoBox: any;
+        number_of_frames: any;
+        TID: any;
+        playing: any;
         constructor(soup: any);
-        initialise(infoBox: any): void;
+        initialise(infoBox?: any): void;
         updateInfoBox(): void;
         beginning(): void;
         go2Frame(fid: any): void;

@@ -3030,6 +3030,7 @@ var molmil;
             this.infoBox = null;
         }
         animationObj.prototype.initialise = function (infoBox) {
+            if (infoBox === void 0) { infoBox = null; }
             this.renderer.animationMode = true;
             this.number_of_frames = this.soup.structures.length ? this.soup.structures[0].number_of_frames : 0;
             this.frameNo = this.renderer.modelId;
