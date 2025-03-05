@@ -7591,8 +7591,8 @@ var molmil;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
+    // ** camera object **
     var glCamera = /** @class */ (function () {
-        // ** camera object **
         function glCamera() {
             this.reset();
         }
