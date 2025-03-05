@@ -3022,15 +3022,6 @@ namespace molmil {
     if (options.callback) options.callback();
   };
 
-  window.addEventListener("message", function (e) {
-    try { var commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : []; }
-    catch (e) { var commandBuffer = []; }
-    e.data.event = e;
-    processExternalCommand(e.data, commandBuffer);
-    try { window.sessionStorage.commandBuffer = JSON.stringify(commandBuffer); }
-    catch (e) { }
-  }, false);
-
   export function processExternalCommand(cmd, commandBuffer) {
     var canvas = molmil.fetchCanvas();
     if (cmd.hasOwnProperty("ping") && commandBuffer !== undefined) {

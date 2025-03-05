@@ -1,4 +1,5 @@
 /// <reference path="./settings.ts" />
+/// <reference path="./color.ts" />
 
 /// <reference path="../../molmil_dep.d.ts" /> 
 /// <reference path="./molmil.ts" />
@@ -23,5 +24,25 @@
  * License: LGPLv3
  *   See https://github.com/gjbekker/molmil/blob/master/LICENCE.md
  */
+
+window.addEventListener("message", function (e) {
+    var commandBuffer = [];
+
+    try {
+        commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : [];
+    }
+    catch (e) {
+        console.error(e);
+    }
+    e.data.event = e;
+    molmil.processExternalCommand(e.data, commandBuffer);
+    try {
+        window.sessionStorage.commandBuffer = JSON.stringify(commandBuffer);
+    }
+    catch (e) {
+        console.error(e);
+    }
+}, false);
+
 
 molmil.initSettings();

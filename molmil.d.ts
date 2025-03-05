@@ -387,6 +387,12 @@ declare namespace molmil {
     var colorEntry_Entity: number;
 }
 declare namespace molmil {
+    function invertColor(hexTripletColor: any): string;
+    function componentToHex(c: any): any;
+    function rgb2hex(r: any, g: any, b: any): string;
+    function hex2rgb(hex: any): number[];
+}
+declare namespace molmil {
     function initSettings(): void;
     function updateBGcolor(): void;
     function fetchCanvas(): any;
@@ -673,10 +679,6 @@ declare namespace molmil {
     }
 }
 declare namespace molmil {
-    function invertColor(hexTripletColor: any): string;
-    function componentToHex(c: any): any;
-    function rgb2hex(r: any, g: any, b: any): string;
-    function hex2rgb(hex: any): number[];
     function checkRebuild(): void;
     class commandLines {
         constructor(canvas: any);

@@ -407,6 +407,17 @@ var molmil;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
+    function invertColor(hexTripletColor) { return "#" + ("000000" + (0xFFFFFF ^ parseInt(hexTripletColor.substring(1), 16)).toString(16)).slice(-6); }
+    molmil.invertColor = invertColor;
+    function componentToHex(c) { var hex = c.toString(16); return hex.length == 1 ? "0" + hex : hex; }
+    molmil.componentToHex = componentToHex;
+    function rgb2hex(r, g, b) { return "#" + molmil.componentToHex(r) + molmil.componentToHex(g) + molmil.componentToHex(b); }
+    molmil.rgb2hex = rgb2hex;
+    function hex2rgb(hex) { hex = (hex.charAt(0) == "#" ? hex.substr(1, 7) : hex); return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)]; }
+    molmil.hex2rgb = hex2rgb;
+})(molmil || (molmil = {}));
+var molmil;
+(function (molmil) {
     function initSettings() {
         cifDicLocJSON = "https://pdbj.org/molmil2/mmcif_pdbx_v50_summary.json";
         cifDicLoc = "https://data.pdbj.org/pdbjplus/dictionaries/mmcif_pdbx.dic";
@@ -3937,20 +3948,6 @@ var molmil;
     }
     molmil.autoSetup = autoSetup;
     ;
-    window.addEventListener("message", function (e) {
-        try {
-            var commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : [];
-        }
-        catch (e) {
-            var commandBuffer = [];
-        }
-        e.data.event = e;
-        processExternalCommand(e.data, commandBuffer);
-        try {
-            window.sessionStorage.commandBuffer = JSON.stringify(commandBuffer);
-        }
-        catch (e) { }
-    }, false);
     function processExternalCommand(cmd, commandBuffer) {
         var canvas = molmil.fetchCanvas();
         if (cmd.hasOwnProperty("ping") && commandBuffer !== undefined) {
@@ -10214,6 +10211,7 @@ var molmil;
     molmil.viewer = viewer;
 })(molmil || (molmil = {}));
 /// <reference path="./settings.ts" />
+/// <reference path="./color.ts" />
 /// <reference path="../../molmil_dep.d.ts" /> 
 /// <reference path="./molmil.ts" />
 /// <reference path="./extends.ts" />
@@ -10234,18 +10232,27 @@ var molmil;
  * License: LGPLv3
  *   See https://github.com/gjbekker/molmil/blob/master/LICENCE.md
  */
+window.addEventListener("message", function (e) {
+    var commandBuffer = [];
+    try {
+        commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : [];
+    }
+    catch (e) {
+        console.error(e);
+    }
+    e.data.event = e;
+    molmil.processExternalCommand(e.data, commandBuffer);
+    try {
+        window.sessionStorage.commandBuffer = JSON.stringify(commandBuffer);
+    }
+    catch (e) {
+        console.error(e);
+    }
+}, false);
 molmil.initSettings();
 var molmil;
 (function (molmil) {
     // ** Molmil's command line interface **
-    function invertColor(hexTripletColor) { return "#" + ("000000" + (0xFFFFFF ^ parseInt(hexTripletColor.substring(1), 16)).toString(16)).slice(-6); }
-    molmil.invertColor = invertColor;
-    function componentToHex(c) { var hex = c.toString(16); return hex.length == 1 ? "0" + hex : hex; }
-    molmil.componentToHex = componentToHex;
-    function rgb2hex(r, g, b) { return "#" + molmil.componentToHex(r) + molmil.componentToHex(g) + molmil.componentToHex(b); }
-    molmil.rgb2hex = rgb2hex;
-    function hex2rgb(hex) { hex = (hex.charAt(0) == "#" ? hex.substr(1, 7) : hex); return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)]; }
-    molmil.hex2rgb = hex2rgb;
     function checkRebuild() {
         var soup = molmil.cli_soup || molmil.fetchCanvas().molmilViewer;
         if (soup.renderer.rebuildRequired)
