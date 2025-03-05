@@ -1,6 +1,6 @@
 /// <reference path="./extends.ts" />
 /// <reference path="./settings.ts" />
-/// <reference path="./SNFG.ts" />
+/// <reference path="./canvas/SNFG.ts" />
 /// <reference path="./geometry/geometry.ts" />
 
 /*!
