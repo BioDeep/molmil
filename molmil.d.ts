@@ -4,8 +4,21 @@ declare namespace molmil {
     function align(A: any, B: any, options: any): any;
 }
 declare namespace molmil {
-    function checkRebuild(): void;
-    class commandLine {
+    export function checkRebuild(): void;
+    interface environment {
+        fileObjects: {};
+        setTimeout: any;
+        clearTimeout: any;
+        navigator: any;
+        window: any;
+        console: any;
+        cli_canvas: any;
+        cli_soup: any;
+        global: any;
+    }
+    export class commandLine {
+        environment: environment;
+        commandBuffer: any[];
         constructor(canvas: any);
         buildGUI(): void;
         eval(command: any): void;
@@ -14,10 +27,11 @@ declare namespace molmil {
         bindNullInterface(): void;
         bindPDBjViewerInterface(): any;
     }
-    function color2rgba(clr: any): any;
-    function xhr(url: any): any;
-    function loadScript(url: any): void;
-    function isBalancedStatement(string: any): boolean;
+    export function color2rgba(clr: any): any;
+    export function xhr(url: any): any;
+    export function loadScript(url: any): void;
+    export function isBalancedStatement(string: any): boolean;
+    export {};
 }
 declare namespace molmil {
     var canvasList: any[];

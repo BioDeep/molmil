@@ -9,12 +9,28 @@ namespace molmil {
         soup.renderer.canvas.update = true;
     }
 
+    interface environment {
+        fileObjects: {}
+        setTimeout;
+        clearTimeout
+        navigator
+        window;
+        console;
+        cli_canvas;
+        cli_soup;
+        global;
+    }
+
     export class commandLine {
 
+        environment: environment = <any>{
+            fileObjects: {}
+        };
+        commandBuffer = [];
+
         constructor(canvas) {
-            this.environment = { fileObjects: {} };
-            this.commandBuffer = [];
-            for (var e in window) this.environment[e] = undefined;
+            for (var e in window)
+                this.environment[e] = undefined;
 
             this.environment.setTimeout = function (cb, tm) { window.setTimeout(cb, tm); }
             this.environment.clearTimeout = function () { window.clearTimeout(); }

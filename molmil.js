@@ -89,7 +89,9 @@ var molmil;
     molmil.checkRebuild = checkRebuild;
     var commandLine = /** @class */ (function () {
         function commandLine(canvas) {
-            this.environment = { fileObjects: {} };
+            this.environment = {
+                fileObjects: {}
+            };
             this.commandBuffer = [];
             for (var e in window)
                 this.environment[e] = undefined;
