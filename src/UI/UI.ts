@@ -1,6 +1,10 @@
-// ** menu interface **
+namespace molmil {
 
-molmil.UI = function (soup) {
+// ** menu interface **
+export class UI {
+
+
+constructor (soup) {
   this.soup = soup;
   this.canvas = soup.canvas;
   this.LM = null;
@@ -16,7 +20,7 @@ molmil.UI = function (soup) {
   this.initMenus();
 }
 
-molmil.UI.prototype.init=function() {
+ init () {
   if (! this.canvas.parentNode.classList.contains("molmil_UI_container")) {
     var container = molmil_dep.dcE("span"); container.classList.add("molmil_UI_container");
     this.canvas.parentNode.replaceChild(container, this.canvas);
@@ -127,13 +131,7 @@ molmil.UI.prototype.showContextMenuAtom=function(x, y, pageX) {
   this.buildComplexMenu(title, this.contextMenuCanvas, null, atoms);
 };
 
-molmil.setOnContextMenu = function (obj, func, lefttoo) {
-  obj.oncontextmenu = func;
-  if (lefttoo) obj.onclick = func;
 
-  obj.addEventListener("touchstart", molmil.handle_contextMenu_touchStart, false);
-  obj.addEventListener("touchend", molmil.handle_contextMenu_touchEnd, false);
-}
 
 molmil.UI.prototype.showRM=function(icon, reset) {
   var menu = icon.parentNode.menu;
@@ -3576,4 +3574,5 @@ molmil.UI.prototype.styleif = function(showOption, callOptions) {
   }
   
 };
-
+}
+}
