@@ -9,7 +9,7 @@ namespace molmil {
         soup.renderer.canvas.update = true;
     }
 
-    export class commandLines {
+    export class commandLine {
 
         constructor(canvas) {
             this.environment = { fileObjects: {} };

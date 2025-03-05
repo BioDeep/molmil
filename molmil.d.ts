@@ -5,7 +5,7 @@ declare namespace molmil {
 }
 declare namespace molmil {
     function checkRebuild(): void;
-    class commandLines {
+    class commandLine {
         constructor(canvas: any);
         buildGUI(): void;
         eval(command: any): void;
