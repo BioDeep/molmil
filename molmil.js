@@ -6118,6 +6118,7 @@ var molmil;
     }());
     molmil.viewer = viewer;
 })(molmil || (molmil = {}));
+/// <reference path="../../molmil_dep.d.ts" /> 
 /// <reference path="./extends.ts" />
 /// <reference path="./settings.ts" />
 /// <reference path="./canvas/SNFG.ts" />

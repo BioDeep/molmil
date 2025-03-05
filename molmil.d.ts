@@ -1,3 +1,4 @@
+/// <reference path="molmil_dep.d.ts" />
 declare namespace molmil {
     const alignInfo: {};
     function align(A: any, B: any, options: any): any;
@@ -633,7 +634,7 @@ declare namespace molmil {
     function resetAttributes(gl: any): void;
     function bindAttribute(gl: any, index: any, size: any, type: any, normalized: any, stride: any, offset: any): void;
     function clearAttributes(gl: any): void;
-    function safeStartViewer(canvas: any): any;
+    function safeStartViewer(canvas: any): NodeJS.Timer;
     function animate_molmilViewers(): void;
     function unproject(dx: any, dy: any, cz: any, mat: any): number[];
     function hermiteInterpolate(a1: any, a2: any, T1: any, T2: any, nop: any, line: any, tangents: any, post2: any): void;
