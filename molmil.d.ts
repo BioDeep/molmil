@@ -4,6 +4,22 @@ declare namespace molmil {
     function align(A: any, B: any, options: any): any;
 }
 declare namespace molmil {
+    function checkRebuild(): void;
+    class commandLines {
+        constructor(canvas: any);
+        buildGUI(): void;
+        eval(command: any): void;
+        wait4Download(): void;
+        runCommand(command: any): void;
+        bindNullInterface(): void;
+        bindPDBjViewerInterface(): any;
+    }
+    function color2rgba(clr: any): any;
+    function xhr(url: any): any;
+    function loadScript(url: any): void;
+    function isBalancedStatement(string: any): boolean;
+}
+declare namespace molmil {
     var canvasList: any[];
     var mouseDown: boolean;
     var mouseDownS: {};
@@ -618,10 +634,11 @@ declare namespace molmil {
     }
 }
 declare namespace molmil {
-    class shaderEngine {
+    class _shaderEngine {
         code: {};
         recompile(renderer: any): void;
     }
+    const shaderEngine: _shaderEngine;
     function setupShader(gl: any, name: any, program: any, src: any, type: any): any;
 }
 declare namespace molmil {
@@ -677,22 +694,6 @@ declare namespace molmil {
         hideCell(): void;
         showCell(): any;
     }
-}
-declare namespace molmil {
-    function checkRebuild(): void;
-    class commandLines {
-        constructor(canvas: any);
-        buildGUI(): void;
-        eval(command: any): void;
-        wait4Download(): void;
-        runCommand(command: any): void;
-        bindNullInterface(): void;
-        bindPDBjViewerInterface(): any;
-    }
-    function color2rgba(clr: any): any;
-    function xhr(url: any): any;
-    function loadScript(url: any): void;
-    function isBalancedStatement(string: any): boolean;
 }
 declare namespace molmil {
     const formatList: {};

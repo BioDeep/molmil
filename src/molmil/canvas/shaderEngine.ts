@@ -1,9 +1,9 @@
 namespace molmil {
 
-    export class shaderEngine {
+    export class _shaderEngine {
 
         // ** initiates the shaders **
-        public code: {};
+        public code: {} = {};
 
         recompile(renderer) {
             var global_defines = ""
@@ -13,6 +13,8 @@ namespace molmil {
             for (var s in renderer.shaders) renderer.shaders[s].compile(global_defines);
         }
     }
+
+    export const shaderEngine = new _shaderEngine();
 
     // ** initializes a shader **
     export function setupShader(gl, name, program, src, type) {

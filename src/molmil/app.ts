@@ -1,3 +1,4 @@
+/// <reference path="./cli.ts" />
 /// <reference path="./settings.ts" />
 /// <reference path="./color.ts" />
 
