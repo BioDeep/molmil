@@ -4918,6 +4918,13 @@ var molmil;
             this.sheetHeight = .125;
             this.skipClearBuffer = false;
             this.onGenerate = null;
+            this.atoms2draw = [];
+            this.xna2draw = [];
+            this.wfatoms2draw = [];
+            this.trace = [];
+            this.bonds2draw = [];
+            this.lines2draw = [];
+            this.bondRef = {};
         }
         _geometry.prototype.generator = function (objects, soup, name, programOptions) {
             return molmil.loadPlugin(molmil.settings.src + "plugins/misc.js", this.generator, this, [objects, soup, name, programOptions]);
@@ -5498,6 +5505,7 @@ var molmil;
         ;
         // ** creates and registers the programs within the renderer object **
         _geometry.prototype.registerPrograms = function (renderer, initOnly) {
+            if (initOnly === void 0) { initOnly = null; }
             if (!renderer.program1 || !renderer.gl.programInit) {
                 renderer.program1 = this.build_simple_render_program(null, null, renderer, { has_ID: true, solid: true, alphaMode: this.buffer1 ? this.buffer1.alphaMode : false });
                 renderer.addProgram(renderer.program1);
@@ -5650,7 +5658,7 @@ var molmil;
         // ** calculates and initiates buffer sizes **
         _geometry.prototype.initChains = function (chains, render, detail_or) {
             detail_or = detail_or || 0;
-            var chain, a, b;
+            var chain;
             var atoms2draw = this.atoms2draw;
             var wfatoms2draw = this.wfatoms2draw;
             var xna2draw = this.xna2draw;

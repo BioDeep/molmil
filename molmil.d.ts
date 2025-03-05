@@ -573,6 +573,19 @@ declare namespace molmil {
         sheetHeight: number;
         skipClearBuffer: boolean;
         onGenerate: any;
+        modelId: any;
+        buffer1: any;
+        buffer2: any;
+        buffer3: any;
+        buffer4: any;
+        buffer5: any;
+        atoms2draw: any[];
+        xna2draw: any[];
+        wfatoms2draw: any[];
+        trace: any[];
+        bonds2draw: any[];
+        lines2draw: any[];
+        bondRef: {};
         generator(objects: any, soup: any, name: any, programOptions: any): any;
         getSphere(r: any, detail_lv: any): any;
         getCylinder(detail_lv: any): any;
@@ -580,7 +593,7 @@ declare namespace molmil {
         generateSphere(r: any, detail_lv: any): any;
         generate(structures: any, render: any, detail_or: any): void;
         build_simple_render_program(vertices_: any, indices_: any, renderer: any, settings: any): any;
-        registerPrograms(renderer: any, initOnly: any): void;
+        registerPrograms(renderer: any, initOnly?: any): void;
         reset(): void;
         updateNormals(obj: any): void;
         initChains(chains: any, render: any, detail_or: any): void;

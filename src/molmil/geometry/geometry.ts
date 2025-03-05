@@ -60,6 +60,21 @@ namespace molmil {
         sheetHeight = .125;
         skipClearBuffer = false;
         onGenerate = null;
+        modelId;
+
+        buffer1;
+        buffer2;
+        buffer3;
+        buffer4;
+        buffer5;
+
+        atoms2draw = [];
+        xna2draw = [];
+        wfatoms2draw = [];
+        trace = [];
+        bonds2draw = [];
+        lines2draw = [];
+        bondRef = {};
 
         generator(objects, soup, name, programOptions) {
             return molmil.loadPlugin(molmil.settings.src + "plugins/misc.js", this.generator, this, [objects, soup, name, programOptions]);
@@ -612,7 +627,7 @@ namespace molmil {
         };
 
         // ** creates and registers the programs within the renderer object **
-        registerPrograms(renderer, initOnly) {
+        registerPrograms(renderer, initOnly = null) {
             if (!renderer.program1 || !renderer.gl.programInit) {
                 renderer.program1 = this.build_simple_render_program(null, null, renderer, { has_ID: true, solid: true, alphaMode: this.buffer1 ? this.buffer1.alphaMode : false });
                 renderer.addProgram(renderer.program1);
@@ -757,7 +772,7 @@ namespace molmil {
         initChains(chains, render, detail_or) {
             detail_or = detail_or || 0;
 
-            var chain, a, b;
+            var chain;
 
             var atoms2draw = this.atoms2draw; var wfatoms2draw = this.wfatoms2draw; var xna2draw = this.xna2draw;
 
