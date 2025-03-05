@@ -1,11 +1,19 @@
 namespace molmil_dep {
 
+    interface XDomainRequest extends XMLHttpRequest {
+        XHRO;
+        CRO: CallRemote;
+        ERROR: boolean;
+        loadHandler;
+        silent;
+    }
+
     export class CallRemote {
 
         formData;
-        request: XMLHttpRequest;
+        request: XDomainRequest;
         Method;
-        parameters: [];
+        parameters: string;
         headers: {};
         ASYNC: boolean;
         ctype: string;
@@ -14,7 +22,7 @@ namespace molmil_dep {
         URL;
 
         constructor(method, crossDomain) {
-            this.formData = null; this.request = null; this.Method = method; this.parameters = [], this.headers = {};
+            this.formData = null; this.request = null; this.Method = method; this.parameters = <any>[], this.headers = {};
             if (method == "POSTv2" && typeof (FormData) != "undefined") { this.formData = new FormData(); }
             else if (method == "POSTv2") { this.Method = "POST"; }
             this.ASYNC = false;
@@ -31,7 +39,7 @@ namespace molmil_dep {
                 this.request = new XDomainRequest();
                 this.Method = "POST";
             }
-            else this.request = new XMLHttpRequest();
+            else this.request = <any>new XMLHttpRequest();
             this.request.XHRO = this.request;
             var ref = this.request.CRO = this;// firefox 2.0
             this.request.ERROR = false;

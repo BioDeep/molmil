@@ -3,11 +3,18 @@ declare namespace molmil_dep {
     function extendsArray(): void;
 }
 declare namespace molmil_dep {
-    class CallRemote {
+    interface XDomainRequest extends XMLHttpRequest {
+        XHRO: any;
+        CRO: CallRemote;
+        ERROR: boolean;
+        loadHandler: any;
+        silent: any;
+    }
+    export class CallRemote {
         formData: any;
-        request: XMLHttpRequest;
+        request: XDomainRequest;
         Method: any;
-        parameters: [];
+        parameters: string;
         headers: {};
         ASYNC: boolean;
         ctype: string;
@@ -21,6 +28,7 @@ declare namespace molmil_dep {
         Send(URL: any, silent: any): void;
         getURL(URL: any): string;
     }
+    export {};
 }
 declare namespace molmil_dep {
     interface MolmilElement extends Element {
