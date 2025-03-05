@@ -21,6 +21,8 @@ namespace molmil {
         global;
     }
 
+    export const commandLines = {};
+
     export class commandLine {
 
         environment: environment = <any>{

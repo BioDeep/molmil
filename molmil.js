@@ -87,6 +87,7 @@ var molmil;
         soup.renderer.canvas.update = true;
     }
     molmil.checkRebuild = checkRebuild;
+    molmil.commandLines = {};
     var commandLine = /** @class */ (function () {
         function commandLine(canvas) {
             this.environment = {

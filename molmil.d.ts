@@ -16,6 +16,7 @@ declare namespace molmil {
         cli_soup: any;
         global: any;
     }
+    export const commandLines: {};
     export class commandLine {
         environment: environment;
         commandBuffer: any[];
