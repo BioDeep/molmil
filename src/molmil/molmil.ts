@@ -2300,447 +2300,9 @@ export function hslToRgb123  (h, s, l) {
   return [r, g, b];
 }
 
-// ** distance/angle/torsion calculation **
 
-molmil.getAtomXYZ = function (atom, soup) {
-  var modelId = soup.renderer.modelId;
-  return [atom.chain.modelsXYZ[modelId][atom.xyz], atom.chain.modelsXYZ[modelId][atom.xyz + 1], atom.chain.modelsXYZ[modelId][atom.xyz + 2]];
-}
 
-molmil.calcMMDistance = function (a1, a2, soup) {
-  var modelId = soup.renderer.modelId, xyz1, xyz2;
-  xyz1 = [a1.chain.modelsXYZ[modelId][a1.xyz], a1.chain.modelsXYZ[modelId][a1.xyz + 1], a1.chain.modelsXYZ[modelId][a1.xyz + 2]];
-  xyz2 = [a2.chain.modelsXYZ[modelId][a2.xyz], a2.chain.modelsXYZ[modelId][a2.xyz + 1], a2.chain.modelsXYZ[modelId][a2.xyz + 2]];
 
-  try { return vec3.distance(xyz1, xyz2); }
-  catch (e) { return NaN; }
-}
-
-molmil.calcAngle = function (a1, a2, a3) {
-  var r2d = 180. / Math.PI, v1 = [0, 0, 0], v2 = [0, 0, 0];
-  try {
-    vec3.subtract(v1, a1, a2); vec3.normalize(v1, v1);
-    vec3.subtract(v2, a3, a2); vec3.normalize(v2, v2);
-    return Math.acos(vec3.dot(v1, v2)) * r2d;
-  }
-  catch (e) { return NaN; }
-}
-
-molmil.calcTorsion = function (a1, a2, a3, a4) {
-  var r2d = 180. / Math.PI, b0 = [0, 0, 0], b1 = [0, 0, 0], b2 = [0, 0, 0], v = [0, 0, 0], w = [0, 0, 0], x, y, tmp = [0, 0, 0];
-
-  try {
-    vec3.subtract(b0, a2, a1); vec3.negate(b0, b0);
-    vec3.subtract(b1, a3, a2); vec3.normalize(b1, b1);
-    vec3.subtract(b2, a4, a3);
-
-    vec3.subtract(v, b0, vec3.scale(tmp, b1, vec3.dot(b0, b1)));
-    vec3.subtract(w, b2, vec3.scale(tmp, b1, vec3.dot(b2, b1)));
-    x = vec3.dot(v, w);
-    y = vec3.dot(vec3.cross(tmp, b1, v), w);
-    return Math.atan2(y, x) * r2d;
-  }
-  catch (e) { return NaN; }
-}
-
-molmil.calcMMAngle = function (a1, a2, a3, soup) {
-  var modelId = soup.renderer.modelId, xyz1, xyz2, xyz3;
-  xyz1 = [a1.chain.modelsXYZ[modelId][a1.xyz], a1.chain.modelsXYZ[modelId][a1.xyz + 1], a1.chain.modelsXYZ[modelId][a1.xyz + 2]];
-  xyz2 = [a2.chain.modelsXYZ[modelId][a2.xyz], a2.chain.modelsXYZ[modelId][a2.xyz + 1], a2.chain.modelsXYZ[modelId][a2.xyz + 2]];
-  xyz3 = [a3.chain.modelsXYZ[modelId][a3.xyz], a3.chain.modelsXYZ[modelId][a3.xyz + 1], a3.chain.modelsXYZ[modelId][a3.xyz + 2]];
-
-  return molmil.calcAngle(xyz1, xyz2, xyz3);
-}
-
-molmil.calcMMTorsion = function (a1, a2, a3, a4, soup) {
-  var modelId = soup.renderer.modelId, xyz1, xyz2, xyz3, xyz4;
-  xyz1 = [a1.chain.modelsXYZ[modelId][a1.xyz], a1.chain.modelsXYZ[modelId][a1.xyz + 1], a1.chain.modelsXYZ[modelId][a1.xyz + 2]];
-  xyz2 = [a2.chain.modelsXYZ[modelId][a2.xyz], a2.chain.modelsXYZ[modelId][a2.xyz + 1], a2.chain.modelsXYZ[modelId][a2.xyz + 2]];
-  xyz3 = [a3.chain.modelsXYZ[modelId][a3.xyz], a3.chain.modelsXYZ[modelId][a3.xyz + 1], a3.chain.modelsXYZ[modelId][a3.xyz + 2]];
-  xyz4 = [a4.chain.modelsXYZ[modelId][a4.xyz], a4.chain.modelsXYZ[modelId][a4.xyz + 1], a4.chain.modelsXYZ[modelId][a4.xyz + 2]];
-
-  return molmil.calcTorsion(xyz1, xyz2, xyz3, xyz4);
-}
-
-molmil.calculateBBTorsions = function (chain, soup) {
-  // calculate the phi/psi angles for the given chain...
-  // phi: C_-N-CA-C
-  // psi: N-CA-C-N^
-  if (chain.molecules.length < 2) return;
-
-  for (var m = 1; m < chain.molecules.length - 1; m++) {
-    chain.molecules[m].phiAngle = molmil.calcMMTorsion(chain.molecules[m - 1].C, chain.molecules[m].N, chain.molecules[m].CA, chain.molecules[m].C, soup);
-    chain.molecules[m].psiAngle = molmil.calcMMTorsion(chain.molecules[m].N, chain.molecules[m].CA, chain.molecules[m].C, chain.molecules[m + 1].N, soup);
-    chain.molecules[m].omegaAngle = molmil.calcMMTorsion(chain.molecules[m - 1].CA, chain.molecules[m - 1].C, chain.molecules[m].N, chain.molecules[m].CA, soup);
-  }
-
-  chain.molecules[0].psiAngle = molmil.calcMMTorsion(chain.molecules[0].N, chain.molecules[0].CA, chain.molecules[0].C, chain.molecules[1].N, soup);
-  chain.molecules[m].phiAngle = molmil.calcMMTorsion(chain.molecules[m - 1].C, chain.molecules[m].N, chain.molecules[m].CA, chain.molecules[m].C, soup);
-  chain.molecules[m].omegaAngle = molmil.calcMMTorsion(chain.molecules[m - 1].CA, chain.molecules[m - 1].C, chain.molecules[m].N, chain.molecules[m].CA, soup);
-
-  chain.molecules[0].phiAngle = chain.molecules[1].phiAngle;
-  chain.molecules[m].psiAngle = chain.molecules[m - 1].psiAngle;
-  chain.molecules[0].omegaAngle = chain.molecules[1].omegaAngle;
-};
-
-// ** used by efsite to synchronize canvases (camera orientation) **
-molmil.linkCanvases = function (canvases) {
-  for (var i = 1; i < canvases.length; i++) canvases[i].renderer.camera = canvases[0].renderer.camera;
-  for (var i = 0; i < canvases.length; i++) canvases[i].molmilViewer.canvases = canvases;
-}
-
-molmil.__webglNotSupported__ = function (canvas) {
-  if (window["webglNotSupported"]) return webglNotSupported(canvas);
-  var div = molmil_dep.dcE("DIV");
-  div.innerHTML = "Your browser does not seem to support WebGL. Please visit the <a target=\"blank\" class=\"external\" href=\"http://get.webgl.org/\">WebGL website</a> for more info on how to gain WebGL support on your browser.<br />";
-  div.style.border = "1px solid #ddd";
-  div.style.margin = div.style.padding = ".25em";
-  canvas.parentNode.replaceChild(div, canvas);
-  return div;
-};
-
-// ** RMSD calculation betwen two arrays of atoms **
-molmil.calcRMSD = function (atoms1, atoms2, transform) { // use w_k ???
-  return molmil.loadPlugin(molmil.settings.src + "plugins/md-anal.js", this.calcRMSD, this, [atoms1, atoms2, transform]);
-}
-
-// end
-
-// ** Molmil's command line interface **
-
-molmil.invertColor = function (hexTripletColor) { return "#" + ("000000" + (0xFFFFFF ^ parseInt(hexTripletColor.substring(1), 16)).toString(16)).slice(-6); }
-molmil.componentToHex = function (c) { var hex = c.toString(16); return hex.length == 1 ? "0" + hex : hex; }
-molmil.rgb2hex = function (r, g, b) { return "#" + molmil.componentToHex(r) + molmil.componentToHex(g) + molmil.componentToHex(b); }
-molmil.hex2rgb = function (hex) { hex = (hex.charAt(0) == "#" ? hex.substr(1, 7) : hex); return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)]; }
-
-molmil.checkRebuild = function () {
-  var soup = molmil.cli_soup || molmil.fetchCanvas().molmilViewer;
-  if (soup.renderer.rebuildRequired) soup.renderer.initBuffers();
-  soup.renderer.rebuildRequired = false;
-  soup.renderer.canvas.update = true;
-}
-
-molmil.commandLines = {};
-
-molmil.commandLine = function (canvas) {
-  this.environment = { fileObjects: {} };
-  this.commandBuffer = [];
-  for (var e in window) this.environment[e] = undefined;
-
-  this.environment.setTimeout = function (cb, tm) { window.setTimeout(cb, tm); }
-  this.environment.clearTimeout = function () { window.clearTimeout(); }
-  this.environment.navigator = window.navigator;
-  this.environment.window = this;
-
-  this.environment.console = {};
-
-  var exports = ["molmil", "molmil_dep", "glMatrix", "mat2", "mat2", "mat3", "mat4", "quat", "quat2", "vec2", "vec3", "vec4"];
-
-  //this.environment.molmil = molmil;
-  //this.environment.molmil_dep = molmil_dep;
-
-  for (var i = 0; i < exports.length; i++) this.environment[exports[i]] = window[exports[i]];
-
-  this.canvas = this.environment.cli_canvas = canvas; this.soup = this.environment.cli_soup = canvas.molmilViewer;
-  canvas.commandLine = this;
-  this.environment.global = this.environment;
-  this.buildGUI();
-
-  this.environment.console.debugMode = true;
-
-  this.environment.console.log = function () {
-    if (this.debugMode) console.log.apply(console, arguments);
-    var __arguments = Array.prototype.slice.call(arguments, 0);
-    var tmp = document.createElement("div"); tmp.textContent = __arguments.join(", ");
-    this.custom(tmp);
-  };
-  this.environment.console.warning = function () {
-    if (this.debugMode) console.warning.apply(console, arguments);
-    var __arguments = Array.prototype.slice.call(arguments, 0);
-    var tmp = document.createElement("div"); tmp.textContent = __arguments.join(", ");
-    tmp.style.color = "yellow";
-    this.custom(tmp);
-  };
-  this.environment.console.error = function () {
-    if (this.debugMode) console.error.apply(console, arguments);
-    var __arguments = Array.prototype.slice.call(arguments, 0);
-    //console.error.apply(console, __arguments);
-    var tmp = document.createElement("div"); tmp.textContent = __arguments.join(", ");
-    tmp.style.color = "red";
-    this.custom(tmp);
-  };
-  this.environment.console.logCommand = function () {
-    if (this.cli.environment.scriptUrl) return;
-    var __arguments = Array.prototype.slice.call(arguments, 0);
-    var tmp = document.createElement("div"); tmp.textContent = __arguments.join("\n");
-    tmp.style.color = "#00BFFF";
-    this.custom(tmp, true);
-  };
-  this.environment.console.custom = function (obj, noPopup) {
-    if (!obj.textContent) return;
-    this.logBox.appendChild(obj);
-    this.logBox.scrollTop = this.logBox.scrollHeight;
-    if (noPopup != true) this.logBox.icon.onclick(true);
-  };
-  this.environment.console.runCommand = function (command, priority) {
-    if (!molmil.isBalancedStatement(command)) return;
-    if (this.cli.environment.cli_canvas.commandLine.initDone === undefined) return molmil_dep.asyncStart(this.runCommand, [command, priority], this, 10);
-
-    var sub_commands = [], startIdx = 0, idx = 0, sc, tmpIdx;
-    var n = 0;
-    while (idx < command.length) {
-      idx = command.indexOf(";", startIdx);
-      if (idx == -1) {
-        sub_commands.push(command.substr(startIdx).trim());
-        break;
-      }
-
-      sc = command.substring(startIdx, idx).trim();
-
-      while (!molmil.isBalancedStatement(sc)) {
-        tmpIdx = idx + 1;
-        idx = command.indexOf(";", tmpIdx);
-        sc = command.substring(startIdx, idx).trim();
-      }
-      sub_commands.push(sc);
-
-      startIdx = idx + 1;
-    }
-
-    if (priority) { var buffer = this.cli.commandBuffer; this.cli.commandBuffer = []; }
-
-    for (var i = 0; i < sub_commands.length; i++) {
-      sub_commands[i] = sub_commands[i].trim();
-      this.logCommand(sub_commands[i]);
-      this.cli.eval(sub_commands[i]);
-      this.backlog.unshift(sub_commands[i]);
-    }
-    this.cli.eval("molmil.checkRebuild();");
-    if (priority) { for (var i = 0; i < buffer.length; i++) this.cli.eval(buffer[i]); }
-
-    /*
-    if (command.indexOf("{") == -1 && command.indexOf(";") != -1) {
-      var sub_commands = command.split(";");
-      for (var i=0; i<sub_commands.length; i++) {
-        sub_commands[i] = sub_commands[i].trim();
-        this.logCommand(sub_commands[i]);
-        this.cli.eval(sub_commands[i]);
-        this.backlog.unshift(sub_commands[i]);
-      }
-    }
-    else {
-      command = command.trim();
-      this.logCommand(command);
-      this.cli.eval(command);
-      this.backlog.unshift(command);
-    }
-    */
-    this.buffer = ""; this.blSel = -1;
-    if (this.cli.environment.cli_canvas.commandLine.initDone == false) this.cli.environment.cli_canvas.commandLine.initDone = true;
-  };
-  this.run = function (command) { this.environment.console.runCommand(command); }
-  this.environment.console.backlog = [];
-  this.environment.console.buffer = "";
-  this.environment.console.blSel = -1;
-
-
-  this.environment.console.logBox = this.logBox; this.environment.console.cli = this;
-
-  this.environment.colors = { red: [255, 0, 0, 255], green: [0, 255, 0, 255], blue: [0, 0, 255, 255], grey: [100, 100, 100, 255], magenta: [255, 0, 255, 255], cyan: [0, 255, 255, 255], yellow: [255, 255, 0, 255], black: [0, 0, 0, 255], white: [255, 255, 255, 255], purple: [128, 0, 128, 255], orange: [255, 165, 0, 255] };
-
-  //this.bindNullInterface();
-
-
-  // this.bindPymolInterface();
-
-  var init = function () {
-    if (this.environment.console.backlog.length == 0) this.initDone = true;
-    else this.initDone = false;
-    this.bindPymolInterface();
-    this.icon.show(true); this.icon.hide();
-    if (molmil.onInterfacebind) molmil.onInterfacebind(this);
-  };
-
-  if (!molmil.commandLines.pyMol) {
-    molmil.loadPlugin(molmil.settings.src + "plugins/pymol-script.js", init, this, [], true);
-  }
-};
-
-molmil.color2rgba = function (clr) {
-  var simple_colors = { aliceblue: 'f0f8ff', antiquewhite: 'faebd7', aqua: '00ffff', aquamarine: '7fffd4', azure: 'f0ffff', beige: 'f5f5dc', bisque: 'ffe4c4', black: '000000', blanchedalmond: 'ffebcd', blue: '0000ff', blueviolet: '8a2be2', brown: 'a52a2a', burlywood: 'deb887', cadetblue: '5f9ea0', chartreuse: '7fff00', chocolate: 'd2691e', coral: 'ff7f50', cornflowerblue: '6495ed', cornsilk: 'fff8dc', crimson: 'dc143c', cyan: '00ffff', darkblue: '00008b', darkcyan: '008b8b', darkgoldenrod: 'b8860b', darkgray: 'a9a9a9', darkgreen: '006400', darkkhaki: 'bdb76b', darkmagenta: '8b008b', darkolivegreen: '556b2f', darkorange: 'ff8c00', darkorchid: '9932cc', darkred: '8b0000', darksalmon: 'e9967a', darkseagreen: '8fbc8f', darkslateblue: '483d8b', darkslategray: '2f4f4f', darkturquoise: '00ced1', darkviolet: '9400d3', deeppink: 'ff1493', deepskyblue: '00bfff', dimgray: '696969', dodgerblue: '1e90ff', feldspar: 'd19275', firebrick: 'b22222', floralwhite: 'fffaf0', forestgreen: '228b22', fuchsia: 'ff00ff', gainsboro: 'dcdcdc', ghostwhite: 'f8f8ff', gold: 'ffd700', goldenrod: 'daa520', gray: '808080', green: '008000', greenyellow: 'adff2f', honeydew: 'f0fff0', hotpink: 'ff69b4', indianred: 'cd5c5c', indigo: '4b0082', ivory: 'fffff0', khaki: 'f0e68c', lavender: 'e6e6fa', lavenderblush: 'fff0f5', lawngreen: '7cfc00', lemonchiffon: 'fffacd', lightblue: 'add8e6', lightcoral: 'f08080', lightcyan: 'e0ffff', lightgoldenrodyellow: 'fafad2', lightgrey: 'd3d3d3', lightgreen: '90ee90', lightpink: 'ffb6c1', lightsalmon: 'ffa07a', lightseagreen: '20b2aa', lightskyblue: '87cefa', lightslateblue: '8470ff', lightslategray: '778899', lightsteelblue: 'b0c4de', lightyellow: 'ffffe0', lime: '00ff00', limegreen: '32cd32', linen: 'faf0e6', magenta: 'ff00ff', maroon: '800000', mediumaquamarine: '66cdaa', mediumblue: '0000cd', mediumorchid: 'ba55d3', mediumpurple: '9370d8', mediumseagreen: '3cb371', mediumslateblue: '7b68ee', mediumspringgreen: '00fa9a', mediumturquoise: '48d1cc', mediumvioletred: 'c71585', midnightblue: '191970', mintcream: 'f5fffa', mistyrose: 'ffe4e1', moccasin: 'ffe4b5', navajowhite: 'ffdead', navy: '000080', oldlace: 'fdf5e6', olive: '808000', olivedrab: '6b8e23', orange: 'ffa500', orangered: 'ff4500', orchid: 'da70d6', palegoldenrod: 'eee8aa', palegreen: '98fb98', paleturquoise: 'afeeee', palevioletred: 'd87093', papayawhip: 'ffefd5', peachpuff: 'ffdab9', peru: 'cd853f', pink: 'ffc0cb', plum: 'dda0dd', powderblue: 'b0e0e6', purple: '800080', red: 'ff0000', rosybrown: 'bc8f8f', royalblue: '4169e1', saddlebrown: '8b4513', salmon: 'fa8072', sandybrown: 'f4a460', seagreen: '2e8b57', seashell: 'fff5ee', sienna: 'a0522d', silver: 'c0c0c0', skyblue: '87ceeb', slateblue: '6a5acd', slategray: '708090', snow: 'fffafa', springgreen: '00ff7f', steelblue: '4682b4', tan: 'd2b48c', teal: '008080', thistle: 'd8bfd8', tomato: 'ff6347', turquoise: '40e0d0', violet: 'ee82ee', violetred: 'd02090', wheat: 'f5deb3', white: 'ffffff', whitesmoke: 'f5f5f5', yellow: 'ffff00', yellowgreen: '9acd32' };
-
-  if (simple_colors.hasOwnProperty(clr.toLowerCase())) clr = "#" + simple_colors[clr.toLowerCase()];
-  if (clr.substr(0, 1) == "#") {
-    var hex = clr.substr(1, 7)
-    return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16), 255];
-  }
-
-  return clr;
-
-}
-
-molmil.commandLine.prototype.buildGUI = function () {
-  this.consoleBox = this.canvas.parentNode.pushNode("span");
-  this.consoleBox.className = "molmil_UI_cl_box"; this.consoleBox.style.overflow = "initial";
-
-  this.logBox = this.consoleBox.pushNode("span");
-  this.logBox.icon = this.icon = this.consoleBox.pushNode("span");
-  this.icon.innerHTML = "<"; this.icon.title = "Display command line";
-  this.icon.className = "molmil_UI_cl_icon";
-
-  this.icon.show = function (nofocus) {
-    this.innerHTML = ">"; this.title = "Hide command line";
-
-    this.cli.logBox.style.borderBottom = "";
-    this.cli.logBox.style.borderRadius = ".33em";
-
-    this.inp.style.display = this.cli.logBox.style.display = "initial";
-    this.cli.consoleBox.style.height = this.cli.consoleBox.style.maxHeight = "calc(" + this.cli.canvas.clientHeight + "px - 6em)";
-    this.cli.consoleBox.style.overflow = "";
-    this.cli.logBox.style.overflow = "";
-    this.cli.logBox.style.pointerEvents = "";
-    if (!nofocus) this.inp.focus();
-  }
-  this.icon.hide = function () {
-    this.innerHTML = "<"; this.title = "Display command line";
-    this.inp.style.display = this.cli.logBox.style.display = "";
-  }
-  this.icon.onclick = function (mini) {
-    if (mini == true) {
-      if (this.inp.style.display == "") {
-        this.cli.logBox.style.display = "initial";
-        this.cli.consoleBox.style.height = "8em";
-        this.cli.logBox.style.pointerEvents = "none";
-        this.cli.logBox.style.overflow = "hidden";
-        this.logBox.scrollTop = this.logBox.scrollHeight;
-      }
-      return;
-    }
-    if (this.inp.style.display == "initial") this.hide();
-    else this.show();
-  };
-  this.inp = this.icon.inp = this.consoleBox.pushNode("span");
-  this.inp.className = "molmil_UI_cl_input"; this.inp.style.display = "none";
-  this.inp.contentEditable = true;
-  this.inp.cli = this.icon.cli = this;
-  this.icon.logBox = this.inp.logBox = this.logBox;
-
-  this.logBox.className = "molmil_UI_cl_logbox"; this.logBox.style.display = "none";
-
-  this.inp.console = this.environment.console;
-
-  this.inp.onkeydown = function (e) {
-    var command = this.textContent;
-    if (e.keyCode == 13 && !e.shiftKey && molmil.isBalancedStatement(command)) {
-      this.console.runCommand(command);
-      this.textContent = "";
-      return false;
-    }
-    if (e.keyCode == 38 && e.ctrlKey) {
-      this.console.blSel++;
-      if (this.console.blSel >= this.console.backlog.length) this.console.blSel = this.console.backlog.length - 1;
-      this.textContent = this.console.backlog[this.console.blSel];
-    }
-    if (e.keyCode == 40 && e.ctrlKey) {
-      this.console.blSel--;
-      if (this.console.blSel < -1) this.console.blSel = 0;
-      if (this.console.blSel == -1) this.textContent = this.console.buffer;
-      else this.textContent = this.console.backlog[this.console.blSel];
-    }
-    if (this.console.blSel == -1) this.console.buffer = command;
-  };
-};
-
-molmil.xhr = function (url) {
-  if (window.hasOwnProperty("rewriteURL")) url = rewriteURL(url);
-  if (window.hasOwnProperty("customXHR")) var request = customXHR(url);
-  else var request = new molmil_dep.CallRemote("GET");
-  request.URL = url;
-  return request;
-};
-
-molmil.loadScript = function (url) {
-  var cc = this.cli_canvas;
-  var cli = cc.commandLine;
-
-
-  cc.molmilViewer.downloadInProgress++;
-
-  var request = molmil.xhr(url);
-  request.ASYNC = true;
-  request.OnDone = function () {
-    cc.molmilViewer.downloadInProgress--;
-    var pathconv = url.split("=");
-    pathconv[pathconv.length - 1] = pathconv[pathconv.length - 1].substr(0, pathconv[pathconv.length - 1].lastIndexOf('/'))
-    if (pathconv[pathconv.length - 1]) pathconv[pathconv.length - 1] += "/";
-    cc.molmilViewer.__cwd__ = cli.environment.scriptUrl = pathconv.join("=");
-    cli.environment.console.runCommand(this.request.responseText.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, ""), true);
-  }
-  for (var e in cc.molmilViewer.extraREST) request.AddParameter(e, cc.molmilViewer.extraREST[e]);
-  for (var e in cc.molmilViewer.extraRESTHeaders) request.headers[e] = cc.molmilViewer.extraRESTHeaders[e];
-  request.Send();
-}
-
-molmil.commandLine.prototype.eval = function (command) {
-  // instead of having two command lines (e.g. pymol & javascript), only have one command line (javascript), but rewrite the incoming /command/ from pymol --> javascript...
-  command = command.trim();
-  if (!command) return;
-
-  if (this.soup.downloadInProgress || !this.initDone) {
-    this.commandBuffer.push(command);
-    if (this.commandBuffer.length == 1) this.wait4Download();
-    return;
-  }
-
-  molmil.cli_canvas = this.canvas; molmil.cli_soup = this.canvas.molmilViewer;
-  if (!this.altCommandIF(this.environment, command)) this.runCommand.apply(this.environment, [command]);
-  molmil.cli_canvas = molmil.cli_soup = null;
-};
-
-molmil.commandLine.prototype.wait4Download = function () {
-  if (this.soup.downloadInProgress || !this.initDone) {
-    var that = this;
-    setTimeout(function () { that.wait4Download(); }, 100);
-    return;
-  }
-
-  var buffer = this.commandBuffer; this.commandBuffer = [];
-  for (var i = 0; i < buffer.length; i++) {
-    this.eval(buffer[i]);
-  }
-};
-
-molmil.commandLine.prototype.runCommand = function (command) { // note the /this/ stuff will not work properly... if there are many functions and internal /var/s...
-  if (command.match(/\bfunction\b/)) command = command.replace(/(\b|;)function\s+(\w+)/g, "$1global.$2 = function"); // make sure that functions are stored in /this/ and not in the local scope...
-  else command = (' ' + command).replace(/(\s|;)var\s+(\w+)\s*=/g, "$1global.$2 ="); // make sure that variables are stored in /this/ and not in the local scope...
-  command = command.replace(/(\s|;)return\sthis;/g, "$1return window;"); // make sure that it is impossible to get back the real window object
-  try { with (this) { eval(command); } }
-  catch (e) { this.console.error(e); }
-};
-
-molmil.isBalancedStatement = function (string) {
-  var parentheses = "[]{}()", stack = [], i, character, bracePosition;
-  for (i = 0; character = string[i]; i++) {
-    bracePosition = parentheses.indexOf(character);
-    if (bracePosition === -1) continue;
-
-    if (bracePosition % 2 === 0) stack.push(bracePosition + 1);
-    else if (stack.pop() !== bracePosition) return false;
-  }
-  return stack.length === 0;
-}
-
-molmil.commandLine.prototype.bindNullInterface = function () {
-  if (this.altCommandIF) this.environment.console.log("Previous command interface unbound.");
-  this.altCommandIF = function (env, command) { return false; };
-}
-
-molmil.commandLine.prototype.bindPDBjViewerInterface = function () {
-  return molmil.loadPlugin(molmil.settings.src + "plugins/jv-script.js", this.bindPDBjViewerInterface, this);
-}
-
-
-// END
 
 // misc stuff
 
@@ -3666,7 +3228,7 @@ molmil.cloneObject = function (obj, settings) {
   return newObj;
 }
 
-molmil.orient = function (atoms, soup, xyzs) {
+export function orient   (atoms, soup, xyzs) {
   // if no atoms supplied, do something...
 
   xyzs = xyzs || [];
@@ -3798,7 +3360,7 @@ molmil.orient = function (atoms, soup, xyzs) {
   }
 }
 
-molmil.superpose = function (A, B, C, modelId, iterate) {
+export function superpose   (A, B, C, modelId, iterate) {
   if (!molmil.toBigEndian32) return molmil.loadPlugin(molmil.settings.src + "plugins/md-anal.js", this.superpose, this, [A, B, C, modelId, iterate]);
   modelId = modelId || 0;
 
@@ -3861,79 +3423,9 @@ molmil.superpose = function (A, B, C, modelId, iterate) {
   return { initial_rmsd: initialRMSD, rmsd: data[0], aligned_indices: selIdxs };
 };
 
-molmil.alignInfo = {};
 
-molmil.align = function (A, B, options) {
-  // https://github.com/CDCgov/bioseq-js/blob/master/dist/bioseq.js
-  if (!window.bioseq) return molmil.loadPlugin("https://raw.githubusercontent.com/CDCgov/bioseq-js/master/dist/bioseq.js", molmil.align, molmil, [A, B, options]);
-  options = options || {};
-  if (!bioseq.amino_acids) {
-    var blosum62 = { "*": { "*": 1, "A": -4, "C": -4, "B": -4, "E": -4, "D": -4, "G": -4, "F": -4, "I": -4, "H": -4, "K": -4, "M": -4, "L": -4, "N": -4, "Q": -4, "P": -4, "S": -4, "R": -4, "T": -4, "W": -4, "V": -4, "Y": -4, "X": -4, "Z": -4 }, "A": { "*": -4, "A": 4, "C": 0, "B": -2, "E": -1, "D": -2, "G": 0, "F": -2, "I": -1, "H": -2, "K": -1, "M": -1, "L": -1, "N": -2, "Q": -1, "P": -1, "S": 1, "R": -1, "T": 0, "W": -3, "V": 0, "Y": -2, "X": 0, "Z": -1 }, "C": { "*": -4, "A": 0, "C": 9, "B": -3, "E": -4, "D": -3, "G": -3, "F": -2, "I": -1, "H": -3, "K": -3, "M": -1, "L": -1, "N": -3, "Q": -3, "P": -3, "S": -1, "R": -3, "T": -1, "W": -2, "V": -1, "Y": -2, "X": -2, "Z": -3 }, "B": { "*": -4, "A": -2, "C": -3, "B": 4, "E": 1, "D": 4, "G": -1, "F": -3, "I": -3, "H": 0, "K": 0, "M": -3, "L": -4, "N": 3, "Q": 0, "P": -2, "S": 0, "R": -1, "T": -1, "W": -4, "V": -3, "Y": -3, "X": -1, "Z": 1 }, "E": { "*": -4, "A": -1, "C": -4, "B": 1, "E": 5, "D": 2, "G": -2, "F": -3, "I": -3, "H": 0, "K": 1, "M": -2, "L": -3, "N": 0, "Q": 2, "P": -1, "S": 0, "R": 0, "T": -1, "W": -3, "V": -2, "Y": -2, "X": -1, "Z": 4 }, "D": { "*": -4, "A": -2, "C": -3, "B": 4, "E": 2, "D": 6, "G": -1, "F": -3, "I": -3, "H": -1, "K": -1, "M": -3, "L": -4, "N": 1, "Q": 0, "P": -1, "S": 0, "R": -2, "T": -1, "W": -4, "V": -3, "Y": -3, "X": -1, "Z": 1 }, "G": { "*": -4, "A": 0, "C": -3, "B": -1, "E": -2, "D": -1, "G": 6, "F": -3, "I": -4, "H": -2, "K": -2, "M": -3, "L": -4, "N": 0, "Q": -2, "P": -2, "S": 0, "R": -2, "T": -2, "W": -2, "V": -3, "Y": -3, "X": -1, "Z": -2 }, "F": { "*": -4, "A": -2, "C": -2, "B": -3, "E": -3, "D": -3, "G": -3, "F": 6, "I": 0, "H": -1, "K": -3, "M": 0, "L": 0, "N": -3, "Q": -3, "P": -4, "S": -2, "R": -3, "T": -2, "W": 1, "V": -1, "Y": 3, "X": -1, "Z": -3 }, "I": { "*": -4, "A": -1, "C": -1, "B": -3, "E": -3, "D": -3, "G": -4, "F": 0, "I": 4, "H": -3, "K": -3, "M": 1, "L": 2, "N": -3, "Q": -3, "P": -3, "S": -2, "R": -3, "T": -1, "W": -3, "V": 3, "Y": -1, "X": -1, "Z": -3 }, "H": { "*": -4, "A": -2, "C": -3, "B": 0, "E": 0, "D": -1, "G": -2, "F": -1, "I": -3, "H": 8, "K": -1, "M": -2, "L": -3, "N": 1, "Q": 0, "P": -2, "S": -1, "R": 0, "T": -2, "W": -2, "V": -3, "Y": 2, "X": -1, "Z": 0 }, "K": { "*": -4, "A": -1, "C": -3, "B": 0, "E": 1, "D": -1, "G": -2, "F": -3, "I": -3, "H": -1, "K": 5, "M": -1, "L": -2, "N": 0, "Q": 1, "P": -1, "S": 0, "R": 2, "T": -1, "W": -3, "V": -2, "Y": -2, "X": -1, "Z": 1 }, "M": { "*": -4, "A": -1, "C": -1, "B": -3, "E": -2, "D": -3, "G": -3, "F": 0, "I": 1, "H": -2, "K": -1, "M": 5, "L": 2, "N": -2, "Q": 0, "P": -2, "S": -1, "R": -1, "T": -1, "W": -1, "V": 1, "Y": -1, "X": -1, "Z": -1 }, "L": { "*": -4, "A": -1, "C": -1, "B": -4, "E": -3, "D": -4, "G": -4, "F": 0, "I": 2, "H": -3, "K": -2, "M": 2, "L": 4, "N": -3, "Q": -2, "P": -3, "S": -2, "R": -2, "T": -1, "W": -2, "V": 1, "Y": -1, "X": -1, "Z": -3 }, "N": { "*": -4, "A": -2, "C": -3, "B": 3, "E": 0, "D": 1, "G": 0, "F": -3, "I": -3, "H": 1, "K": 0, "M": -2, "L": -3, "N": 6, "Q": 0, "P": -2, "S": 1, "R": 0, "T": 0, "W": -4, "V": -3, "Y": -2, "X": -1, "Z": 0 }, "Q": { "*": -4, "A": -1, "C": -3, "B": 0, "E": 2, "D": 0, "G": -2, "F": -3, "I": -3, "H": 0, "K": 1, "M": 0, "L": -2, "N": 0, "Q": 5, "P": -1, "S": 0, "R": 1, "T": -1, "W": -2, "V": -2, "Y": -1, "X": -1, "Z": 3 }, "P": { "*": -4, "A": -1, "C": -3, "B": -2, "E": -1, "D": -1, "G": -2, "F": -4, "I": -3, "H": -2, "K": -1, "M": -2, "L": -3, "N": -2, "Q": -1, "P": 7, "S": -1, "R": -2, "T": -1, "W": -4, "V": -2, "Y": -3, "X": -2, "Z": -1 }, "S": { "*": -4, "A": 1, "C": -1, "B": 0, "E": 0, "D": 0, "G": 0, "F": -2, "I": -2, "H": -1, "K": 0, "M": -1, "L": -2, "N": 1, "Q": 0, "P": -1, "S": 4, "R": -1, "T": 1, "W": -3, "V": -2, "Y": -2, "X": 0, "Z": 0 }, "R": { "*": -4, "A": -1, "C": -3, "B": -1, "E": 0, "D": -2, "G": -2, "F": -3, "I": -3, "H": 0, "K": 2, "M": -1, "L": -2, "N": 0, "Q": 1, "P": -2, "S": -1, "R": 5, "T": -1, "W": -3, "V": -3, "Y": -2, "X": -1, "Z": 0 }, "T": { "*": -4, "A": 0, "C": -1, "B": -1, "E": -1, "D": -1, "G": -2, "F": -2, "I": -1, "H": -2, "K": -1, "M": -1, "L": -1, "N": 0, "Q": -1, "P": -1, "S": 1, "R": -1, "T": 5, "W": -2, "V": 0, "Y": -2, "X": 0, "Z": -1 }, "W": { "*": -4, "A": -3, "C": -2, "B": -4, "E": -3, "D": -4, "G": -2, "F": 1, "I": -3, "H": -2, "K": -3, "M": -1, "L": -2, "N": -4, "Q": -2, "P": -4, "S": -3, "R": -3, "T": -2, "W": 11, "V": -3, "Y": 2, "X": -2, "Z": -3 }, "V": { "*": -4, "A": 0, "C": -1, "B": -3, "E": -2, "D": -3, "G": -3, "F": -1, "I": 3, "H": -3, "K": -2, "M": 1, "L": 1, "N": -3, "Q": -2, "P": -2, "S": -2, "R": -3, "T": 0, "W": -3, "V": 4, "Y": -1, "X": -1, "Z": -2 }, "Y": { "*": -4, "A": -2, "C": -2, "B": -3, "E": -2, "D": -3, "G": -3, "F": 3, "I": -1, "H": 2, "K": -2, "M": -1, "L": -1, "N": -2, "Q": -1, "P": -3, "S": -2, "R": -2, "T": -2, "W": 2, "V": -1, "Y": 7, "X": -1, "Z": -2 }, "X": { "*": -4, "A": 0, "C": -2, "B": -1, "E": -1, "D": -1, "G": -1, "F": -1, "I": -1, "H": -1, "K": -1, "M": -1, "L": -1, "N": -1, "Q": -1, "P": -2, "S": 0, "R": -1, "T": 0, "W": -2, "V": -1, "Y": -1, "X": -1, "Z": -1 }, "Z": { "*": -4, "A": -1, "C": -3, "B": 1, "E": 4, "D": 1, "G": -2, "F": -3, "I": -3, "H": 0, "K": 1, "M": -1, "L": -3, "N": 0, "Q": 3, "P": -1, "S": 0, "R": 0, "T": -1, "W": -3, "V": -2, "Y": -2, "X": -1, "Z": 4 } };
-    var alphabet = Object.keys(blosum62);
-    bioseq.amino_acids = bioseq.makeAlphabetMap(alphabet.join(""), alphabet.indexOf("*"));
 
-    var i, j, matrix = [];
-    for (i = 0; i < alphabet.length; i++) {
-      matrix[i] = [];
-      for (j = 0; j < alphabet.length; j++) matrix[i][j] = blosum62[alphabet[i]][alphabet[j]];
-    }
-    bioseq.blosum62 = matrix;
-  }
-
-  if (A.molecules[0].xna) {
-    var conv = { "A": "A", "C": "C", "T": "T", "G": "G", "DA": "A", "DC": "C", "DT": "T", "DG": "G", "U": "T", "DU": "T" };
-    var Aseq = A.molecules.map(function (x) { return conv[x.name] || "*"; }).join("");
-    var Bseq = B.molecules.map(function (x) { return conv[x.name] || "*"; }).join("");
-    var rst = bioseq.align(Aseq, Bseq, true);
-  }
-  else {
-    var conv = { "ALA": "A", "CYS": "C", "ASP": "D", "GLU": "E", "PHE": "F", "GLY": "G", "HIS": "H", "ILE": "I", "LYS": "K", "LEU": "L", "MET": "M", "ASN": "N", "PRO": "P", "GLN": "Q", "ARG": "R", "SER": "S", "THR": "T", "VAL": "V", "TRP": "W", "TYR": "Y" };
-    var Aseq = A.molecules.map(function (x) { return conv[x.name] || "*"; }).join("");
-    var Bseq = B.molecules.map(function (x) { return conv[x.name] || "*"; }).join("");
-    var rst = bioseq.align(Aseq, Bseq, true, bioseq.blosum62, [12, 1], null, bioseq.amino_acids);
-  }
-
-  var fmt = bioseq.cigar2gaps(Aseq, Bseq, rst.position, rst.CIGAR);
-  var a = rst.position, b = (rst.CIGAR[0] & 0xf) == 4 ? (rst.CIGAR[0] >> 4) : 0, Aarr = [], Barr = [], align = [];
-
-  Aseq = "-".repeat(b) + fmt[0];
-  Bseq = Bseq.substr(0, b) + fmt[1];
-  b = 0;
-  for (var i = 0; i < Aseq.length; i++) {
-    if (Aseq[i] == "-") { b++; align.push(" "); continue; }
-    if (Bseq[i] == "-") { a++; align.push(" "); continue; }
-    if (A.molecules[a].CA && B.molecules[b].CA) {
-      Aarr.push(A.molecules[a].CA);
-      Barr.push(B.molecules[b].CA);
-      align.push("|");
-    }
-    a++; b++;
-  }
-
-  var Carr = [];
-  for (var c = 0; c < B.entry.chains.length; c++) Carr = Carr.concat(B.entry.chains[c].atoms);
-
-  var data = molmil.superpose(Aarr, Barr, Carr, undefined, 2);
-  if (data === undefined) return console.error("An error occurred...");
-
-  var oASIdxs = align.map(function (x, i) { return i; }).filter(function (x) { return align[x] == "|"; }).filter(function (x, i) { return data.aligned_indices.includes(i); })
-  data.optimized_alignment = align.map(function (x, i) { return oASIdxs.includes(i) ? "|" : " " }).join("");
-  data.alignment = align.join("");
-  data.seq1 = Aseq;
-  data.seq2 = Bseq;
-  data.chain1 = A;
-  data.chain2 = B;
-
-  ID = A.CID + ":" + B.CID;
-
-  molmil.alignInfo[ID] = data;
-
-  if (!options.skipOrient) molmil.orient(Aarr, A.entry.soup);
-  A.entry.soup.renderer.rebuildRequired = true;
-  molmil.geometry.reInitChains = true;
-}
-
-molmil.record = function (canvas, video_path, video_framerate) {
+export function record   (canvas, video_path, video_framerate) {
   // make sure that both the width & height are divisible by 2 (ffmpeg issue)
   var w = canvas.width, h = canvas.height;
   if (w % 2 == 1) w--;
@@ -3948,12 +3440,12 @@ molmil.record = function (canvas, video_path, video_framerate) {
   };
 }
 
-molmil.end_record = function (canvas) {
+export function end_record   (canvas) {
   finalizeVideo();
   canvas.renderer.onRenderFinish = undefined;
 }
 
-molmil.getState = function () {
+export function getState  () {
   var canvas = molmil.fetchCanvas(), commands = [];
 
 
@@ -4040,7 +3532,7 @@ if (!window.molmil_dep) {
   head.appendChild(dep);
 }
 
-molmil.initVR = function (soup, callback) {
+export function initVR   (soup, callback) {
   var initFakeVR = function () {
     var dep = document.createElement("script")
     dep.src = molmil.settings.src + "lib/webvr-polyfill.min.js";
@@ -4071,17 +3563,6 @@ molmil.initVR = function (soup, callback) {
   }
 }
 
-molmil.arrayMin = function (arr) {
-  return arr.reduce(function (p, v) {
-    return (p < v ? p : v);
-  });
-}
-
-molmil.arrayMax = function (arr) {
-  return arr.reduce(function (p, v) {
-    return (p > v ? p : v);
-  });
-}
 
 
 }
