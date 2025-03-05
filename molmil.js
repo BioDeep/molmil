@@ -3153,6 +3153,9 @@ var molmil;
     molmil.addEnableMolmilButton = addEnableMolmilButton;
     // ** initializes a viewer object (quick function) **
     function createViewer(target, width, height, soupObject) {
+        if (width === void 0) { width = null; }
+        if (height === void 0) { height = null; }
+        if (soupObject === void 0) { soupObject = null; }
         var canvas;
         var dpr = window.devicePixelRatio || 1;
         if (target.tagName.toLowerCase() == "canvas")
@@ -4200,96 +4203,8 @@ var molmil;
     molmil.pointerLock_update = pointerLock_update;
     ;
     // END
-    function autoSetup(options, canvas) {
-        options = options || {};
-        if (!options.hasOwnProperty("enable"))
-            options.enable = ["ui", "cli", "cli-hash", "drag-n-drop"];
-        if (!canvas) {
-            for (var i = 0; i < molmil.canvasList.length; i++)
-                molmil.autoSetup(options, molmil.canvasList[i]);
-            var viewers = document.getElementsByClassName("molmilViewer");
-            if (viewers.length == 0)
-                viewers = [document.getElementById("molmilViewer")];
-            for (var i = 0; i < viewers.length; i++)
-                if (viewers[i] && !viewers[i].molmilViewer)
-                    canvas = molmil.autoSetup(options, viewers[i]);
-            return canvas;
-        }
-        if (!canvas.molmilViewer)
-            molmil.createViewer(canvas);
-        if (canvas.setupDone)
-            return;
-        if (options.enable.includes("cli") && !canvas.commandLine) {
-            var cli = new molmil.commandLine(canvas);
-            if (options.environment) {
-                for (var e in options.environment)
-                    cli.environment[e] = options.environment[e];
-            }
-            if (options.enable.includes("cli-hash")) {
-                var hash = window.location.hash ? window.location.hash.substr(1) : "";
-                if (hash)
-                    cli.environment.console.runCommand(decodeURIComponent(hash));
-                window.onhashchange = function () {
-                    var hash = window.location.hash ? window.location.hash.substr(1) : "";
-                    if (hash) {
-                        molmil.clear(canvas);
-                        cli.environment.console.runCommand(decodeURIComponent(hash));
-                    }
-                };
-            }
-            if (window.onkeyup == null) {
-                var lastPress = 0;
-                window.onkeyup = function (ev) {
-                    if (ev.keyCode == 27) {
-                        var now = (new Date()).getTime();
-                        if (now - lastPress < 250)
-                            cli.icon.onclick();
-                        lastPress = now;
-                    }
-                };
-            }
-        }
-        else if (options.enable.includes("cli-hash") && !canvas.commandLine) {
-            var hash = window.location.hash ? window.location.hash.substr(1) : "";
-            if (hash) {
-                var cli = new molmil.commandLine(canvas);
-                if (options.environment) {
-                    for (var e in options.environment)
-                        cli.environment[e] = options.environment[e];
-                }
-                cli.environment.console.runCommand(decodeURIComponent(hash));
-                cli.consoleBox.style.display = "none";
-            }
-        }
-        var wait = false;
-        if (options.enable.includes("ui") && !molmil.UI) {
-            wait = true;
-            molmil.loadPlugin(molmil.settings.src + "plugins/UI.js", null, null, null, true);
-        }
-        if (wait)
-            return molmil_dep.asyncStart(molmil.autoSetup, [options, canvas], this, 10);
-        if (options.enable.includes("ui")) {
-            canvas.molmilViewer.UI = new molmil.UI(canvas.molmilViewer);
-            canvas.molmilViewer.UI.init();
-            canvas.molmilViewer.animation = new molmil.animationObj(canvas.molmilViewer);
-        }
-        if (options.enable.includes("drag-n-drop"))
-            molmil.bindCanvasInputs(canvas);
-        try {
-            var commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : [];
-        }
-        catch (e) {
-            var commandBuffer = [];
-        }
-        for (var i = 0; i < commandBuffer.length; i++)
-            processExternalCommand(commandBuffer[i]);
-        canvas.setupDone = true;
-        if (options.callback)
-            options.callback();
-    }
-    molmil.autoSetup = autoSetup;
-    ;
     function processExternalCommand(cmd, commandBuffer) {
+        if (commandBuffer === void 0) { commandBuffer = null; }
         var canvas = molmil.fetchCanvas();
         if (cmd.hasOwnProperty("ping") && commandBuffer !== undefined) {
             if (!canvas || !canvas.setupDone)
@@ -4666,7 +4581,7 @@ var molmil;
             canvas.height = h;
             canvas.renderer.resizeViewPort();
         }
-        initVideo(video_path, canvas.width, canvas.height, video_framerate);
+        molmil.initVideo(video_path, canvas.width, canvas.height, video_framerate);
         canvas.renderer.onRenderFinish = function () {
             var pixels = new Uint8Array(canvas.width * canvas.width * 4);
             addFrame(canvas.toDataURL());
@@ -10731,6 +10646,99 @@ var molmil;
         });
     }
     molmil.arrayMax = arrayMax;
+})(molmil || (molmil = {}));
+/// <reference path="../../plugins/UI.d.ts"/>
+var molmil;
+(function (molmil) {
+    function autoSetup(options, canvas) {
+        if (options === void 0) { options = {}; }
+        if (canvas === void 0) { canvas = null; }
+        if (!options.hasOwnProperty("enable"))
+            options.enable = ["ui", "cli", "cli-hash", "drag-n-drop"];
+        if (!canvas) {
+            for (var i = 0; i < molmil.canvasList.length; i++)
+                molmil.autoSetup(options, molmil.canvasList[i]);
+            var viewers = document.getElementsByClassName("molmilViewer");
+            if (viewers.length == 0)
+                viewers = [document.getElementById("molmilViewer")];
+            for (var i = 0; i < viewers.length; i++)
+                if (viewers[i] && !viewers[i].molmilViewer)
+                    canvas = molmil.autoSetup(options, viewers[i]);
+            return canvas;
+        }
+        if (!canvas.molmilViewer)
+            molmil.createViewer(canvas);
+        if (canvas.setupDone)
+            return;
+        if (options.enable.includes("cli") && !canvas.commandLine) {
+            var cli = new molmil.commandLine(canvas);
+            if (options.environment) {
+                for (var e in options.environment)
+                    cli.environment[e] = options.environment[e];
+            }
+            if (options.enable.includes("cli-hash")) {
+                var hash = window.location.hash ? window.location.hash.substr(1) : "";
+                if (hash)
+                    cli.environment.console.runCommand(decodeURIComponent(hash));
+                window.onhashchange = function () {
+                    var hash = window.location.hash ? window.location.hash.substr(1) : "";
+                    if (hash) {
+                        molmil.clear(canvas);
+                        cli.environment.console.runCommand(decodeURIComponent(hash));
+                    }
+                };
+            }
+            if (window.onkeyup == null) {
+                var lastPress = 0;
+                window.onkeyup = function (ev) {
+                    if (ev.keyCode == 27) {
+                        var now = (new Date()).getTime();
+                        if (now - lastPress < 250)
+                            cli.icon.onclick();
+                        lastPress = now;
+                    }
+                };
+            }
+        }
+        else if (options.enable.includes("cli-hash") && !canvas.commandLine) {
+            var hash = window.location.hash ? window.location.hash.substr(1) : "";
+            if (hash) {
+                var cli = new molmil.commandLine(canvas);
+                if (options.environment) {
+                    for (var e in options.environment)
+                        cli.environment[e] = options.environment[e];
+                }
+                cli.environment.console.runCommand(decodeURIComponent(hash));
+                cli.consoleBox.style.display = "none";
+            }
+        }
+        var wait = false;
+        if (options.enable.includes("ui") && !molmil.UI) {
+            wait = true;
+            molmil.loadPlugin(molmil.settings.src + "plugins/UI.js", null, null, null, true);
+        }
+        if (wait)
+            return molmil_dep.asyncStart(molmil.autoSetup, [options, canvas], this, 10);
+        if (options.enable.includes("ui")) {
+            canvas.molmilViewer.UI = new molmil.UI(canvas.molmilViewer);
+            canvas.molmilViewer.UI.init();
+            canvas.molmilViewer.animation = new molmil.animationObj(canvas.molmilViewer);
+        }
+        if (options.enable.includes("drag-n-drop"))
+            molmil.bindCanvasInputs(canvas);
+        var commandBuffer = [];
+        try {
+            commandBuffer = window.sessionStorage.commandBuffer ? JSON.parse(window.sessionStorage.commandBuffer) : [];
+        }
+        catch (e) { }
+        for (var i = 0; i < commandBuffer.length; i++)
+            molmil.processExternalCommand(commandBuffer[i]);
+        canvas.setupDone = true;
+        if (options.callback)
+            options.callback();
+    }
+    molmil.autoSetup = autoSetup;
+    ;
 })(molmil || (molmil = {}));
 var molmil;
 (function (molmil) {
