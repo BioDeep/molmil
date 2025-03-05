@@ -318,36 +318,37 @@ namespace molmil {
     };
 
 
-    
-// display modes
-export var displayMode_None = 0;
-export var displayMode_Visible = 0.5;
-export var displayMode_Default = 1;
-export var displayMode_Spacefill = 2;
-export var displayMode_Spacefill_SC = 2.5;
-export var displayMode_BallStick = 3;
-export var displayMode_BallStick_SC = 3.5;
-export var displayMode_Stick = 4;
-export var displayMode_Stick_SC = 4.5;
-export var displayMode_Wireframe = 5;
-export var displayMode_Wireframe_SC = 5.5;
-export var displayMode_CaTrace = 6;
-export var displayMode_Tube = 7;
-export var displayMode_Cartoon = 8;
-export var displayMode_CartoonRocket = 8.5;
-export var displayMode_ChainSurfaceCG = 10;
-export var displayMode_ChainSurfaceSimple = 11;
 
-export var displayMode_XNA = 400;
+    // display modes
+    export var displayMode_None = 0;
+    export var displayMode_Visible = 0.5;
+    export var displayMode_Default = 1;
+    export var displayMode_Spacefill = 2;
+    export var displayMode_Spacefill_SC = 2.5;
+    export var displayMode_BallStick = 3;
+    export var displayMode_BallStick_SC = 3.5;
+    export var displayMode_Stick = 4;
+    export var displayMode_Stick_SC = 4.5;
+    export var displayMode_Wireframe = 5;
+    export var displayMode_Wireframe_SC = 5.5;
+    export var displayMode_CaTrace = 6;
+    export var displayMode_Tube = 7;
+    export var displayMode_Cartoon = 8;
+    export var displayMode_CartoonRocket = 8.5;
+    export var displayMode_ChainSurfaceCG = 10;
+    export var displayMode_ChainSurfaceSimple = 11;
 
-// color modes
-molmil.colorEntry_Default = 1;
-molmil.colorEntry_Structure = 2;
-molmil.colorEntry_CPK = 3;
-molmil.colorEntry_Group = 4;
-molmil.colorEntry_Chain = 5;
-molmil.colorEntry_Custom = 6;
-molmil.colorEntry_ChainAlt = 7;
-molmil.colorEntry_ABEGO = 8;
-molmil.colorEntry_Entity = 9;
+    export var displayMode_XNA = 400;
+
+    // color modes
+    export var colorEntry_Default = 1;
+    export var colorEntry_Structure = 2;
+    export var colorEntry_CPK = 3;
+    export var colorEntry_Group = 4;
+    export var colorEntry_Chain = 5;
+    export var colorEntry_Custom = 6;
+    export var colorEntry_ChainAlt = 7;
+    export var colorEntry_ABEGO = 8;
+    export var colorEntry_Entity = 9;
+
 }
