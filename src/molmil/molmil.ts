@@ -2816,7 +2816,7 @@ namespace molmil {
     return true;
   };
 
-  export function loadPlugin(URL, callBack, self, argList, async) {
+  export function loadPlugin(URL, callBack, self, argList, async = null) {
     var head = document.getElementsByTagName("head")[0];
     head.scripts = head.scripts || {}; // tracker for plugins => so it's not downloaded twice while the browser is processing the code...
     if (!head.scripts.hasOwnProperty(URL)) {

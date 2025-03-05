@@ -317,8 +317,6 @@ namespace molmil {
         "ASP": 1, "GLU": 1, "PHE": 1, "GLY": 1, "HIS": 1, "ILE": 1, "LYS": 1, "LEU": 1, "MET": 1, "ASN": 1, "PRO": 1, "GLN": 1, "ARG": 1, "SER": 1, "THR": 1, "VAL": 1, "TRP": 1, "TYR": 1, "ACE": 1, "NME": 1, "NH2": 1, "HIP": 1, "HIE": 1, "HID": 1, "CYM": 1
     };
 
-
-
     // display modes
     export var displayMode_None = 0;
     export var displayMode_Visible = 0.5;
