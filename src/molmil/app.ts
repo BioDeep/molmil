@@ -3,6 +3,13 @@
 /// <reference path="./canvas/SNFG.ts" />
 /// <reference path="./geometry/geometry.ts" />
 
+/// <reference path="./canvas/FBO.ts" />
+/// <reference path="./canvas/glCamera.ts" />
+/// <reference path="./canvas/render.ts" />
+/// <reference path="./canvas/shaderEngine.ts" />
+/// <reference path="./canvas/SNFG.ts" />
+/// <reference path="./canvas/viewer.ts" />
+
 /*!
  * molmil.js
  *
