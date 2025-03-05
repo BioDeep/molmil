@@ -1,3 +1,5 @@
+/// <reference path="./general.ts" />
+
 namespace molmil_dep {
 
     export class _dBT {

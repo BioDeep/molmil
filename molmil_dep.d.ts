@@ -43,6 +43,29 @@ declare namespace molmil_dep {
     function extendsObject(): void;
 }
 declare namespace molmil_dep {
+    function Strip(String: any, what?: any): any;
+    function isTouchDevice(): boolean;
+    function getKeyFromObject(obj: any, key: any, defaultReturn: any): any;
+    function $(e: any): HTMLElement;
+    function dcE(e: any): any;
+    function dcEi(e: any, i: any): any;
+    function isNumber(n: any): boolean;
+    function Partition(String: any, point: any): string[];
+    function Clear(what: any): void;
+    function expandCatTree(ev: any, genOnly: any): void;
+    function initCheck(): void;
+    function init(): void;
+    function findPos(obj: any): number[];
+    function asyncStart(func: any, argList: any, thisArg: any, n: any): NodeJS.Timer;
+    function focusOnTextEnd(el: any): void;
+    function Rounding(what: any, decimals: any): number;
+    function strRounding(what: any, decimals: any): string;
+    function naturalSort(a: any, b: any): number;
+    function createINPUT(TYPE: any, NAME: any, VALUE: any): any;
+    function createTextBox(value: any, maxWidth: any): any;
+    function isObject(item: any): boolean;
+}
+declare namespace molmil_dep {
     class _dBT {
         MSIE: boolean;
         MFF: boolean;
@@ -75,29 +98,6 @@ declare namespace molmil_dep {
         constructor();
     }
     const dBT: _dBT;
-}
-declare namespace molmil_dep {
-    function Strip(String: any, what?: any): any;
-    function isTouchDevice(): boolean;
-    function getKeyFromObject(obj: any, key: any, defaultReturn: any): any;
-    function $(e: any): HTMLElement;
-    function dcE(e: any): any;
-    function dcEi(e: any, i: any): any;
-    function isNumber(n: any): boolean;
-    function Partition(String: any, point: any): string[];
-    function Clear(what: any): void;
-    function expandCatTree(ev: any, genOnly: any): void;
-    function initCheck(): void;
-    function init(): void;
-    function findPos(obj: any): number[];
-    function asyncStart(func: any, argList: any, thisArg: any, n: any): NodeJS.Timer;
-    function focusOnTextEnd(el: any): void;
-    function Rounding(what: any, decimals: any): number;
-    function strRounding(what: any, decimals: any): string;
-    function naturalSort(a: any, b: any): number;
-    function createINPUT(TYPE: any, NAME: any, VALUE: any): any;
-    function createTextBox(value: any, maxWidth: any): any;
-    function isObject(item: any): boolean;
 }
 declare namespace molmil_dep {
     var staticHOST: string;
