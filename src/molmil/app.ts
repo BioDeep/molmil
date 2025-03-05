@@ -1,4 +1,5 @@
 /// <reference path="../../molmil_dep.d.ts" /> 
+/// <reference path="./molmil.ts" />
 
 /// <reference path="./extends.ts" />
 /// <reference path="./settings.ts" />
