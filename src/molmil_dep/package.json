@@ -4,7 +4,7 @@
   "description": "dependency manager and runtime for molmil viewer",
   "main": "molmil_dep.js",
   "author": {
-    "name": "xieguigang"
+    "name": "Gert-Jan Bekker; xieguigang"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.25",
