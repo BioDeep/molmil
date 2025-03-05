@@ -1,0 +1,63 @@
+namespace molmil {
+
+    export const SNFG: any = {};
+
+    molmil.SNFG["0MK"] = molmil.SNFG["32O"] = molmil.SNFG.BDR = molmil.SNFG.RIB = molmil.SNFG.RIP = molmil.SNFG.YYM = molmil.SNFG.Z6J = molmil.SNFG.RIB = { "type": "5-star", "rgba": [246, 158, 161, 255], "name": "Rib" };
+    molmil.SNFG["1GN"] = molmil.SNFG.X6X = { "type": "cube", "rgba": [255, 212, 0, 255], "rgba2": [255, 255, 255, 255], "name": "GalN" };
+    molmil.SNFG["1S4"] = molmil.SNFG.MUR = molmil.SNFG.MUR = { "type": "flat-hex", "rgba": [161, 122, 77, 255], "name": "Mur" };
+    molmil.SNFG["289"] = { "type": "flat-hex", "rgba": [246, 158, 161, 255], "name": "DDmanHep" };
+    molmil.SNFG["3MK"] = molmil.SNFG.SHD = molmil.SNFG.Z6H = molmil.SNFG.ALT = { "type": "sphere", "rgba": [246, 158, 161, 255], "name": "Alt" };
+    molmil.SNFG["49T"] = { "type": "oct-pyramid", "rgba": [237, 28, 36, 255], "rgba2": [255, 255, 255, 255], "name": "FucNAc" };
+    molmil.SNFG["4GL"] = molmil.SNFG.GL0 = molmil.SNFG.GUP = molmil.SNFG.Z8H = molmil.SNFG.GUL = molmil.SNFG.GUP = molmil.SNFG.GL0 = { "type": "sphere", "rgba": [244, 121, 32, 255], "name": "Gul" };
+    molmil.SNFG["4N2"] = molmil.SNFG.Z0F = molmil.SNFG.ZCD = molmil.SNFG.IDO = { "type": "sphere", "rgba": [161, 122, 77, 255], "name": "Ido" };
+    molmil.SNFG["64K"] = molmil.SNFG.AHR = molmil.SNFG.ARA = molmil.SNFG.ARB = molmil.SNFG.BXX = molmil.SNFG.BXY = molmil.SNFG.FUB = molmil.SNFG.SEJ = molmil.SNFG.ARA = molmil.SNFG.AHR = { "type": "5-star", "rgba": [0, 166, 81, 255], "name": "Ara" };
+    molmil.SNFG["66O"] = { "type": "oct-pyramid", "rgba": [244, 121, 32, 255], "name": "6dGul" };
+    molmil.SNFG["95Z"] = { "type": "cube", "rgba": [0, 166, 81, 255], "rgba2": [255, 255, 255, 255], "name": "ManN" };
+    molmil.SNFG.A2G = molmil.SNFG.NGA = molmil.SNFG.YYQ = molmil.SNFG.NGA = { "type": "cube", "rgba": [255, 212, 0, 255], "name": "GalNAc" };
+    molmil.SNFG.A5C = molmil.SNFG.SDY = molmil.SNFG.ZEE = molmil.SNFG.TAL = { "type": "sphere", "rgba": [165, 67, 153, 255], "name": "Tal" };
+    molmil.SNFG.ABE = molmil.SNFG.ABE = { "type": "rect", "rgba": [244, 121, 32, 255], "name": "Abe" };
+    molmil.SNFG.ADA = molmil.SNFG.GTK = molmil.SNFG.GTR = molmil.SNFG.ADA = { "type": "diamond", "rgba": [255, 212, 0, 255], "rgba2": [255, 255, 255, 255], "name": "GalA" };
+    molmil.SNFG.AFD = molmil.SNFG.ALL = molmil.SNFG.WOO = molmil.SNFG.Z2D = molmil.SNFG.ALL = molmil.SNFG.WOO = { "type": "sphere", "rgba": [165, 67, 153, 255], "name": "All" };
+    molmil.SNFG.AMU = molmil.SNFG.MUB = { "type": "flat-hex", "rgba": [165, 67, 153, 255], "name": "MurNAc" };
+    molmil.SNFG.BDF = molmil.SNFG.FRU = molmil.SNFG.LFR = molmil.SNFG.Z9N = molmil.SNFG.FRU = { "type": "pentagon", "rgba": [0, 166, 81, 255], "name": "Fru" };
+    molmil.SNFG.BDP = molmil.SNFG.GCU = molmil.SNFG.GCU = { "type": "diamond", "rgba": [0, 144, 188, 255], "rgba2": [255, 255, 255, 255], "name": "GlcA" };
+    molmil.SNFG.BEM = molmil.SNFG.MAV = molmil.SNFG.MAV = molmil.SNFG.BEM = { "type": "diamond", "rgba": [0, 166, 81, 255], "rgba2": [255, 255, 255, 255], "name": "ManA" };
+    molmil.SNFG.BGC = molmil.SNFG.GLC = molmil.SNFG.Z8T = molmil.SNFG.GLC = molmil.SNFG.MAL = molmil.SNFG.BGC = { "type": "sphere", "rgba": [0, 144, 188, 255], "name": "Glc" };
+    molmil.SNFG.BM3 = molmil.SNFG.BM7 = { "type": "cube", "rgba": [0, 166, 81, 255], "name": "ManNAc" };
+    molmil.SNFG.BMA = molmil.SNFG.MAN = molmil.SNFG.MAN = molmil.SNFG.BMA = { "type": "sphere", "rgba": [0, 166, 81, 255], "name": "Man" };
+    molmil.SNFG.DDA = molmil.SNFG.RAE = molmil.SNFG.Z5J = molmil.SNFG.OLI = { "type": "rect", "rgba": [0, 144, 188, 188], "name": "Oli" };
+    molmil.SNFG.FCA = molmil.SNFG.FCB = molmil.SNFG.FUC = molmil.SNFG.FUL = molmil.SNFG.GYE = molmil.SNFG.FUC = molmil.SNFG.FUL = { "type": "oct-pyramid", "rgba": [237, 28, 36, 255], "name": "Fuc" };
+    molmil.SNFG.G6D = molmil.SNFG.YYK = molmil.SNFG.QUI = { "type": "oct-pyramid", "rgba": [0, 144, 188, 255], "name": "Qui" };
+    molmil.SNFG.GAL = molmil.SNFG.GIV = molmil.SNFG.GLA = molmil.SNFG.GXL = molmil.SNFG.GZL = molmil.SNFG.GAL = molmil.SNFG.GLA = { "type": "sphere", "rgba": [255, 212, 0, 255], "name": "Gal" };
+    molmil.SNFG.GCS = molmil.SNFG.PA1 = molmil.SNFG.GCS = { "type": "cube", "rgba": [0, 144, 188, 255], "rgba2": [255, 255, 255, 255], "name": "GlcN" };
+    molmil.SNFG.GMH = { "type": "flat-hex", "rgba": [0, 166, 81, 255], "name": "LDmanHep" };
+    molmil.SNFG.HSQ = molmil.SNFG.LXZ = { "type": "cube", "rgba": [161, 122, 77, 255], "name": "IdoNAc" };
+    molmil.SNFG.HSY = molmil.SNFG.LXC = molmil.SNFG.XYP = molmil.SNFG.XYS = molmil.SNFG.XYZ = molmil.SNFG.XYL = molmil.SNFG.XYS = molmil.SNFG.LXC = molmil.SNFG.XYP = { "type": "5-star", "rgba": [244, 121, 32, 255], "name": "Xyl" };
+    molmil.SNFG.IDR = molmil.SNFG.IDS = { "type": "diamond", "rgba": [255, 255, 255, 255], "rgba2": [161, 122, 77, 255], "name": "IdoA" };
+    molmil.SNFG.KDM = molmil.SNFG.KDN = molmil.SNFG.KDN = { "type": "diamond", "rgba": [0, 166, 81, 255], "name": "Kdn" };
+    molmil.SNFG.KDO = molmil.SNFG.KDO = { "type": "flat-hex", "rgba": [255, 212, 0, 255], "name": "Kdo" };
+    molmil.SNFG.LDY = molmil.SNFG.Z4W = molmil.SNFG.LYX = { "type": "5-star", "rgba": [255, 212, 0, 255], "name": "Lyx" };
+    molmil.SNFG.LGU = molmil.SNFG.LGU = { "type": "diamond", "rgba": [244, 121, 32, 255], "rgba2": [255, 255, 255, 255], "name": "GulA" };
+    molmil.SNFG.LXB = { "type": "cube", "rgba": [244, 121, 32, 255], "name": "GulNAc" };
+    molmil.SNFG.NAA = { "type": "cube", "rgba": [165, 67, 153, 255], "name": "AllNAc" };
+    molmil.SNFG.NAG = molmil.SNFG.NDG = molmil.SNFG.NGZ = molmil.SNFG.NAG = molmil.SNFG["4YS"] = molmil.SNFG.SGN = molmil.SNFG.BGLN = molmil.SNFG.NDG = { "type": "cube", "rgba": [0, 144, 188, 255], "name": "GlcNAc" };
+    molmil.SNFG.NGC = molmil.SNFG.NGE = { "type": "diamond", "rgba": [165, 67, 153, 255], "name": "Neu5Gc" };
+    molmil.SNFG.PSV = molmil.SNFG.SF6 = molmil.SNFG.SF9 = molmil.SNFG.TTV = molmil.SNFG.PSI = { "type": "pentagon", "rgba": [246, 158, 161, 255], "name": "Psi" };
+    molmil.SNFG.PZU = molmil.SNFG.PAR = { "type": "rect", "rgba": [246, 158, 161, 255], "name": "Par" };
+    molmil.SNFG.RAM = molmil.SNFG.RM4 = molmil.SNFG.XXR = molmil.SNFG.RAM = { "type": "oct-pyramid", "rgba": [0, 166, 81, 255], "name": "Rha" };
+    molmil.SNFG.SIA = molmil.SNFG.SLB = molmil.SNFG.SIA = { "type": "diamond", "rgba": [165, 67, 153, 255], "name": "Neu5Ac" };
+    molmil.SNFG.SOE = molmil.SNFG.UEA = molmil.SNFG.SOR = { "type": "pentagon", "rgba": [244, 121, 32, 255], "name": "Sor" };
+    molmil.SNFG.T6T = molmil.SNFG.TAG = { "type": "pentagon", "rgba": [255, 212, 0, 255], "name": "Tag" };
+    molmil.SNFG.TYV = molmil.SNFG.TYV = { "type": "rect", "rgba": [0, 166, 81, 255], "name": "Tyv" };
+    molmil.SNFG.X0X = molmil.SNFG.X1X = { "type": "diamond", "rgba": [165, 67, 153, 255], "rgba2": [255, 255, 255, 255], "name": "TalA" };
+    molmil.SNFG.XXM = molmil.SNFG.API = { "type": "pentagon", "rgba": [0, 144, 188, 255], "name": "Api" };
+    molmil.SNFG.Z3U = molmil.SNFG.DIG = { "type": "rect", "rgba": [165, 67, 153, 255], "name": "Dig" };
+    molmil.SNFG.Z9W = { "type": "oct-pyramid", "rgba": [0, 144, 188, 255], "rgba2": [255, 255, 255, 255], "name": "QuiNAc" };
+    molmil.SNFG.__UNKNOWN__ = { "type": "flat-hex", "rgba": [255, 255, 255, 255], "name": "__UNKNOWN__" };
+    molmil.SNFG.COL = { "type": "rect", "rgba": [165, 67, 153, 255], "name": "Col" };
+    molmil.SNFG.BAC = { "type": "flat-hex", "rgba": [0, 144, 188, 255], "name": "Bac" };
+    molmil.SNFG.DHA = { "type": "flat-hex", "rgba": [244, 121, 32, 255], "name": "Dha" };
+    molmil.SNFG.NEU = { "type": "diamond", "rgba": [161, 122, 77, 255], "name": "Neu" };
+    molmil.SNFG.GMH = { "type": "flat-hex", "rgba": [0, 166, 81, 255], "name": "LDmanHep" };
+
+}
